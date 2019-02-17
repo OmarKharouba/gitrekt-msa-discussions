@@ -1,4 +1,4 @@
-package me.mohamedelzarei.gitrekt.Config.Server.middlewares;
+package me.mohamedelzarei.gitrekt.server.middlewares;
 
 import com.google.gson.Gson;
 import io.netty.buffer.ByteBuf;

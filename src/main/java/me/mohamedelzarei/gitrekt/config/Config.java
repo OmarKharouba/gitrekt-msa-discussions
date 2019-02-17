@@ -1,4 +1,4 @@
-package me.mohamedelzarei.gitrekt.Config.Config;
+package me.mohamedelzarei.gitrekt.config;
 
 import java.io.File;
 import java.io.FileReader;

@@ -1,15 +1,15 @@
-package me.mohamedelzarei.gitrekt.Config.Server;
+package me.mohamedelzarei.gitrekt.server;
 
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cors.CorsConfig;
 import io.netty.handler.codec.http.cors.CorsConfigBuilder;
 import io.netty.handler.codec.http.cors.CorsHandler;
-import me.mohamedelzarei.gitrekt.Config.Server.middlewares.JSONDecoder;
-import me.mohamedelzarei.gitrekt.Config.Server.middlewares.JSONEncoder;
+import me.mohamedelzarei.gitrekt.server.middlewares.EchoJsonMiddleware;
+import me.mohamedelzarei.gitrekt.server.middlewares.JSONDecoder;
+import me.mohamedelzarei.gitrekt.server.middlewares.JSONEncoder;
 
 public class HTTPServerInitalizer extends ChannelInitializer<SocketChannel> {
     @Override
@@ -20,13 +20,15 @@ public class HTTPServerInitalizer extends ChannelInitializer<SocketChannel> {
                 .build();
 
         ChannelPipeline p = socketChannel.pipeline();
-        p.addLast(new CorsHandler(corsConfig));
+//        p.addLast(new CorsHandler(corsConfig));
         p.addLast("codec", new HttpServerCodec());
         p.addLast(new JSONEncoder());
         p.addLast("aggregator", new HttpObjectAggregator(Short.MAX_VALUE));
         p.addLast("compressor", new HttpContentCompressor());
         p.addLast(new JSONDecoder());
 
+        // sample middleware
+        p.addLast(new EchoJsonMiddleware());
         // add your own middleware here
 
     }

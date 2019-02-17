@@ -1,4 +1,4 @@
-package me.mohamedelzarei.gitrekt.Config.Server;
+package me.mohamedelzarei.gitrekt.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -8,7 +8,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import me.mohamedelzarei.gitrekt.Config.Config.Config;
+import me.mohamedelzarei.gitrekt.config.Config;
 
 import java.net.InetSocketAddress;
 
