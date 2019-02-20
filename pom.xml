@@ -63,6 +63,13 @@
       <version>1.6.0</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.google.googlejavaformat/google-java-format -->
+    <dependency>
+        <groupId>com.google.googlejavaformat</groupId>
+        <artifactId>google-java-format</artifactId>
+        <version>1.7</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -141,14 +148,18 @@
             <version>1.18.0</version>
             <configuration>
               <java>
-                <eclipse>
-                  <file>${basedir}/eclipse-fmt.xml</file>
-                  <version>4.7.1</version>
-                </eclipse>
+                  <googleJavaFormat>
+                    <version>1.7</version>
+                    <style>GOOGLE</style>
+                  </googleJavaFormat>
+                  <removeUnusedImports/>
+                  <importOrder>
+                    <!-- Specify either order or file, but not both -->
+                    <order>java,javax,org,com,com.diffplug,</order>
+                  </importOrder>
               </java>
           </configuration>
         </plugin>
-
 
       </plugins>
     </pluginManagement>
