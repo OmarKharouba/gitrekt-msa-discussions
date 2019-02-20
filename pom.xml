@@ -117,26 +117,22 @@
         </plugin>
 
 
-        <!-- Maven Shade Plugin -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>2.3</version>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.0.0</version>
+          <configuration>
+            <violationSeverity>warning</violationSeverity>
+            <failOnViolation>true</failOnViolation>
+            <consoleOutput>true</consoleOutput>
+            <encoding>UTF-8</encoding>
+            <configLocation>google_checks.xml</configLocation>
+          </configuration>
           <executions>
-            <!-- Run shade goal on package phase -->
             <execution>
-              <phase>package</phase>
               <goals>
-                <goal>shade</goal>
+                <goal>check</goal>
               </goals>
-              <configuration>
-                <transformers>
-                  <!-- add Main-Class to manifest file -->
-                  <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                    <mainClass>me.mohamedelzarei.gitrekt.server.NettyHTTPServer</mainClass>
-                  </transformer>
-                </transformers>
-              </configuration>
             </execution>
           </executions>
         </plugin>

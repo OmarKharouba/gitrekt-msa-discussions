@@ -11,7 +11,6 @@ import io.netty.handler.logging.LoggingHandler;
 import me.mohamedelzarei.gitrekt.config.Config;
 
 import java.net.InetSocketAddress;
-
 public class NettyHTTPServer {
     ServerBootstrap bootstrap;
     NioEventLoopGroup bossGroup, workerGroup;
