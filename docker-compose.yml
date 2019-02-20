@@ -1,13 +1,21 @@
 version: "3"
 services:
   proxy:
+    restart: always
     build:
       dockerfile: ./Dockerfile
-      context: ./nginx
+      context: docker/nginx
     ports:
       - 80:80
 
+  rabbit:
+    restart: always
+    image: rabbitmq:3.7.9-management
+    ports:
+      - 15672:15672
+
   mainserver:
+    restart: always
     build:
       dockerfile: ./Dockerfile
       context: .
@@ -16,3 +24,5 @@ services:
     volumes:
       - ./:/usr/src/app
     command: "mvn exec:java"
+    env_file:
+      - .env

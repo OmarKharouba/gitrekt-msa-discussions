@@ -9,7 +9,7 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 
@@ -26,7 +26,7 @@ public class JsonEncoder extends ChannelOutboundHandlerAdapter {
 
     response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
     response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-    response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+    response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
     ctx.write(response);
   }

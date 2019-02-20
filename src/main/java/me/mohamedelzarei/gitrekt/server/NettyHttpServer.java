@@ -13,7 +13,6 @@ import me.mohamedelzarei.gitrekt.config.Config;
 
 import java.net.InetSocketAddress;
 
-
 public class NettyHttpServer {
   ServerBootstrap bootstrap;
   NioEventLoopGroup bossGroup;

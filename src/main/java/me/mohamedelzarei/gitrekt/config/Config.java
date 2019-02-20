@@ -1,7 +1,5 @@
 package me.mohamedelzarei.gitrekt.config;
 
-import java.io.File;
-import java.io.FileReader;
 import java.util.Properties;
 
 public class Config {
@@ -11,7 +9,7 @@ public class Config {
   public Config() {
     configFile = new Properties();
     try {
-      configFile.load(new FileReader(new File("resources/config.cfg").getAbsolutePath()));
+      configFile.load(getClass().getClassLoader().getResourceAsStream("config.cfg"));
     } catch (Exception exception) {
       exception.printStackTrace();
     }
