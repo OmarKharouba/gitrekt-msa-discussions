@@ -5,28 +5,29 @@ import java.io.FileReader;
 import java.util.Properties;
 
 public class Config {
-    Properties configFile;
+  Properties configFile;
 
-    public Config() {
-        configFile = new Properties();
-        try {
-            configFile.load(new FileReader(new File("resources/config.cfg").getAbsolutePath()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+  /** Initialize and Load config file. */
+  public Config() {
+    configFile = new Properties();
+    try {
+      configFile.load(new FileReader(new File("resources/config.cfg").getAbsolutePath()));
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
+  }
 
-    public String getProperty(String key) {
-        return this.configFile.getProperty(key);
-    }
+  public String getProperty(String key) {
+    return this.configFile.getProperty(key);
+  }
 
-    private static class ConfigHelper {
-        private static final Config INSTANCE = new Config();
-    }
+  private static class ConfigHelper {
+    private static final Config INSTANCE = new Config();
+  }
 
-    public static final Config instance = new Config();
+  public static final Config instance = new Config();
 
-    public static Config getInstance() {
-        return ConfigHelper.INSTANCE;
-    }
+  public static Config getInstance() {
+    return ConfigHelper.INSTANCE;
+  }
 }

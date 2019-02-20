@@ -15,4 +15,4 @@ services:
       - 3000
     volumes:
       - ./:/usr/src/app
-    command: "mvn exec:java -Dexec.mainClass=\"me.mohamedelzarei.gitrekt.server.NettyHTTPServer\""
+    command: "mvn exec:java"
