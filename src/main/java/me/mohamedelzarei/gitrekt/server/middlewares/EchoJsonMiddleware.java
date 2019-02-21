@@ -3,6 +3,7 @@ package me.mohamedelzarei.gitrekt.server.middlewares;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import me.mohamedelzarei.gitrekt.database.postgres.PostgresConnection;
 
 public class EchoJsonMiddleware extends ChannelOutboundHandlerAdapter {
   @Override

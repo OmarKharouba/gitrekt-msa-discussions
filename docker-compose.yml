@@ -1,6 +1,6 @@
 version: "3"
 services:
-  proxy:
+  nginx:
     restart: always
     build:
       dockerfile: ./Dockerfile
@@ -14,7 +14,31 @@ services:
     ports:
       - 15672:15672
 
-  mainserver:
+  cassandra:
+    restart: always
+    image: cassandra
+    volumes:
+      - ./cassandra-data/:/var/lib/cassandra
+
+  redis:
+    restart: always
+    image: redis
+    ports:
+      - 6379:6379
+
+  postgres:
+    restart: always
+    image: postgres
+    environment:
+      - POSTGRES_DB=gitrekt_quora
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - ./postgres-data/:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  server:
     restart: always
     build:
       dockerfile: ./Dockerfile

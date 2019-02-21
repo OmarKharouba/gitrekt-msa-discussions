@@ -1,5 +1,3 @@
 package me.mohamedelzarei.gitrekt.models;
 
-public class Request {
-
-}
+public class Request {}

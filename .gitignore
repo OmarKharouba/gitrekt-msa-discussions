@@ -41,3 +41,6 @@ buildNumber.properties
 .classpath
 .project
 *.iml
+
+postgres-data
+cassandra-data
