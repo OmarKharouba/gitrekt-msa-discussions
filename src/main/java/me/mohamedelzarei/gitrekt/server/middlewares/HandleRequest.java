@@ -6,8 +6,6 @@ import me.mohamedelzarei.gitrekt.models.Request;
 
 public class HandleRequest extends SimpleChannelInboundHandler<Request> {
 
-    @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Request msg) throws Exception {
-
-    }
+  @Override
+  protected void channelRead0(ChannelHandlerContext ctx, Request msg) throws Exception {}
 }
