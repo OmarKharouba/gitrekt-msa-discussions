@@ -9,8 +9,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-import me.mohamedelzarei.gitrekt.config.Config;
-
 import java.net.InetSocketAddress;
 
 public class NettyHttpServer {
@@ -53,10 +51,9 @@ public class NettyHttpServer {
   public void listen() {
     try {
       // load host and ip from config
-      final Config config = Config.getInstance();
 
-      final String host = config.getProperty("host");
-      final int port = Integer.parseInt(config.getProperty("port"));
+      final String host = System.getenv("SERVER_HOST");
+      final int port = Integer.parseInt(System.getenv("SERVER_PORT"));
 
       // listen to port async
       ChannelFuture future = bootstrap.bind(new InetSocketAddress(host, port));
