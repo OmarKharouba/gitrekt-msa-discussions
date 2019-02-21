@@ -1,5 +1,8 @@
 FROM maven:latest
 
+RUN apt-get update
+RUN apt-get install -y inotify-tools
+
 WORKDIR /usr/src/app
 
 COPY "./pom.xml" .

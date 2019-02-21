@@ -23,6 +23,6 @@ services:
       - 3000
     volumes:
       - ./:/usr/src/app
-    command: "mvn exec:java"
+    command: "sh -c \"./watch.sh\""
     env_file:
       - .env

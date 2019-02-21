@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) {
-    System.out.println(msg);
 
     // msg is not valid close
     if (msg.decoderResult() != DecoderResult.SUCCESS) {
