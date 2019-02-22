@@ -1,4 +1,4 @@
-package me.mohamedelzarei.gitrekt.database.postgres;
+package com.gitrekt.quora.database.postgres;
 
 import com.zaxxer.hikari.HikariDataSource;
 

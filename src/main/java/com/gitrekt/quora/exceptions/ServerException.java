@@ -1,4 +1,4 @@
-package me.mohamedelzarei.gitrekt.exceptions;
+package com.gitrekt.quora.exceptions;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 

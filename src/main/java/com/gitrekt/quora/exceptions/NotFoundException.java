@@ -1,9 +1,10 @@
-package me.mohamedelzarei.gitrekt.exceptions;
+package com.gitrekt.quora.exceptions;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class NotFoundException extends ServerException {
-  String error;
+
+  private String error;
 
   public NotFoundException() {
     error = "404 not found.";

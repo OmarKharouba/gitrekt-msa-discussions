@@ -1,4 +1,4 @@
-package me.mohamedelzarei.gitrekt.models;
+package com.gitrekt.quora.models;
 
 import com.google.gson.JsonObject;
 

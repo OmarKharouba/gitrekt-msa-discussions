@@ -1,5 +1,6 @@
-package me.mohamedelzarei.gitrekt.server;
+package com.gitrekt.quora.server;
 
+import com.gitrekt.quora.queue.MessageQueueConsumer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -9,12 +10,18 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 public class NettyHttpServer {
-  ServerBootstrap bootstrap;
-  NioEventLoopGroup bossGroup;
-  NioEventLoopGroup workerGroup;
+
+  private static final Logger LOGGER = Logger.getLogger(NettyHttpServer.class.getName());
+
+  private ServerBootstrap bootstrap;
+  private NioEventLoopGroup bossGroup;
+  private NioEventLoopGroup workerGroup;
 
   public NettyHttpServer() {}
 
@@ -48,10 +55,8 @@ public class NettyHttpServer {
   }
 
   /** Start the server on host:port. */
-  public void listen() {
+  private void listen() {
     try {
-      // load host and ip from config
-
       final String host = System.getenv("SERVER_HOST");
       final int port = Integer.parseInt(System.getenv("SERVER_PORT"));
 
@@ -63,9 +68,10 @@ public class NettyHttpServer {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
               if (channelFuture.isSuccess()) {
-                System.out.println("Server Listening on http://" + host + ":" + port);
+                LOGGER.info(String.format("Server Listening on http://%s:%s", host, port));
               } else {
-                System.err.println("Failed to start server: " + channelFuture.cause().toString());
+                LOGGER.severe(
+                    String.format("Failed to start server %s", channelFuture.cause().toString()));
               }
             }
           });
@@ -79,7 +85,15 @@ public class NettyHttpServer {
     }
   }
 
+  /** Start the server. */
   public static void main(String[] args) {
+    try {
+      MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
+    } catch (IOException exception) {
+      LOGGER.severe(
+          String.format("Failed to start Message Queue Consumer %s", exception.getMessage()));
+      exception.printStackTrace();
+    }
     NettyHttpServer server = new NettyHttpServer();
     server.init();
   }
