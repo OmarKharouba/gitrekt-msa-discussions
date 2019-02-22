@@ -1,7 +1,10 @@
-package me.mohamedelzarei.gitrekt.server.middlewares;
+package com.gitrekt.quora.server.middlewares;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import com.gitrekt.quora.exceptions.NotFoundException;
+import com.gitrekt.quora.models.Request;
 
 import io.netty.buffer.ByteBuf;
 
@@ -11,8 +14,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import me.mohamedelzarei.gitrekt.exceptions.NotFoundException;
-import me.mohamedelzarei.gitrekt.models.Request;
 
 import java.nio.charset.StandardCharsets;
 
@@ -91,7 +92,7 @@ public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
         request.setJwt(auth[1]);
       }
     }
-    ctx.channel().writeAndFlush(request).channel().closeFuture();
+    ctx.fireChannelRead(request);
   }
 
   @Override

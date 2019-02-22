@@ -1,4 +1,9 @@
-package me.mohamedelzarei.gitrekt.server;
+package com.gitrekt.quora.server;
+
+import com.gitrekt.quora.server.middlewares.EchoJsonMiddleware;
+import com.gitrekt.quora.server.middlewares.JsonDecoder;
+import com.gitrekt.quora.server.middlewares.JsonEncoder;
+import com.gitrekt.quora.server.middlewares.MessageQueueProducerMiddleware;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -12,11 +17,8 @@ import io.netty.handler.codec.http.cors.CorsConfig;
 import io.netty.handler.codec.http.cors.CorsConfigBuilder;
 import io.netty.handler.codec.http.cors.CorsHandler;
 
-import me.mohamedelzarei.gitrekt.server.middlewares.EchoJsonMiddleware;
-import me.mohamedelzarei.gitrekt.server.middlewares.JsonDecoder;
-import me.mohamedelzarei.gitrekt.server.middlewares.JsonEncoder;
-
 public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
+
   @Override
   protected void initChannel(SocketChannel socketChannel) throws Exception {
     CorsConfig corsConfig =
@@ -41,6 +43,6 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
     // sample middleware
     pipeline.addLast(new EchoJsonMiddleware());
     // add your own middleware here
-
+    pipeline.addLast(new MessageQueueProducerMiddleware());
   }
 }

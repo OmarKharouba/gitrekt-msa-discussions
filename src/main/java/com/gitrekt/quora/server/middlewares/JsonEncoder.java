@@ -1,8 +1,9 @@
-package me.mohamedelzarei.gitrekt.server.middlewares;
+package com.gitrekt.quora.server.middlewares;
 
 import com.google.gson.Gson;
-
 import com.google.gson.JsonObject;
+
+import com.gitrekt.quora.exceptions.ServerException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,7 +15,6 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import me.mohamedelzarei.gitrekt.exceptions.ServerException;
 
 public class JsonEncoder extends ChannelOutboundHandlerAdapter {
   @Override
@@ -46,6 +46,7 @@ public class JsonEncoder extends ChannelOutboundHandlerAdapter {
     response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=UTF-8");
     response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
     response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+
     ctx.write(response);
   }
 }
