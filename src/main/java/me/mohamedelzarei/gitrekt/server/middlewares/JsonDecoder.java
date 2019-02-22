@@ -15,7 +15,6 @@ import me.mohamedelzarei.gitrekt.exceptions.NotFoundException;
 import me.mohamedelzarei.gitrekt.models.Request;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
   @Override
@@ -55,7 +54,7 @@ public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
     // Http Method, Path without queryParams, Query Params
     // Body if found
 
-    request.setHttpMethod(msg.method().toString());
+    request.setHttpMethod(msg.method().toString().toLowerCase());
     request.setPath(decoder.path());
     request.setQueryParams(decoder.parameters());
     request.setBody(body);
@@ -74,14 +73,17 @@ public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
     if (path.length > 3) {
       request.setCommand(path[3] + service + "V1"); // followUsersV1
     } else {
-      request.setCommand(request.getHttpMethod() + service + "V1"); // GetUsersV1
+      request.setCommand(
+          request.getHttpMethod().substring(0, 1).toUpperCase()
+              + request.getHttpMethod().substring(1)
+              + service
+              + "V1"); // GetUsersV1
     }
 
     // JWT token
     // set token if auth header is set
     // format: Bearer xxxxxx-xxxxxx-xxxxxx
 
-    System.out.println(msg.headers());
     String authHeader = msg.headers().get("Authorization");
     if (authHeader != null) {
       String[] auth = authHeader.split(" ");
