@@ -20,7 +20,7 @@ public class MessageQueueConsumer {
   private Channel channel;
 
   /**
-   * Creates a Message Queue Consumer instance by:
+   * Creates a Message Queue Consumer.
    *
    * <ol>
    *   <li>1. Creating a channel.
