@@ -1,9 +1,9 @@
 package com.gitrekt.quora.server.middlewares;
 
+import com.gitrekt.quora.exceptions.ServerException;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
-import com.gitrekt.quora.exceptions.ServerException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

@@ -139,6 +139,8 @@
                         <consoleOutput>true</consoleOutput>
                         <encoding>UTF-8</encoding>
                         <configLocation>google_checks.xml</configLocation>
+                        <suppressionsLocation>google_style_supression.xml</suppressionsLocation>
+                        <suppressionsFileExpression>google_style.supression.file</suppressionsFileExpression>
                     </configuration>
                     <executions>
                         <execution>
