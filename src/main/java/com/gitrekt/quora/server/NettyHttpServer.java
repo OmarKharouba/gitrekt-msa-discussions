@@ -1,5 +1,8 @@
 package com.gitrekt.quora.server;
 
+import com.gitrekt.quora.database.arango.ArangoSeed;
+import com.gitrekt.quora.database.arango.handlers.PollArangoHandler;
+import com.gitrekt.quora.models.Poll;
 import com.gitrekt.quora.queue.MessageQueueConsumer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -12,6 +15,7 @@ import io.netty.handler.logging.LoggingHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -89,10 +93,9 @@ public class NettyHttpServer {
   public static void main(String[] args) {
     try {
       MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
-    } catch (IOException exception) {
+    } catch (Exception exception) {
       LOGGER.severe(
           String.format("Failed to start Message Queue Consumer %s", exception.getMessage()));
-      exception.printStackTrace();
     }
     NettyHttpServer server = new NettyHttpServer();
     server.init();

@@ -43,4 +43,4 @@ buildNumber.properties
 *.iml
 
 postgres-data
-cassandra-data
+arangodb-data

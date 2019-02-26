@@ -39,7 +39,7 @@ public class MessageQueueConnection {
     static {
       try {
         INSTANCE = new MessageQueueConnection();
-      } catch (IOException | TimeoutException exception) {
+      } catch (Exception exception) {
         LOGGER.severe("Error creating a connection to RabbitMQ service");
         exception.printStackTrace();
       }

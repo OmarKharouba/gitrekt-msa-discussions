@@ -36,6 +36,10 @@ public class PostgresConnection {
     }
   }
 
+  public void closeConnection() {
+    dataSource.close();
+  }
+
   private static class PostgresConnectionHelper {
     private static final PostgresConnection INSTANCE = new PostgresConnection();
   }
