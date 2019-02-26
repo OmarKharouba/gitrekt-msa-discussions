@@ -1,0 +1,3 @@
+[submodule "database"]
+	path = database
+	url = https://gitlab.com/gitrekt-msa/db.git
