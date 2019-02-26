@@ -4,7 +4,6 @@ import com.arangodb.ArangoCursor;
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDBException;
 import com.gitrekt.quora.database.arango.ArangoConnection;
-import com.gitrekt.quora.models.Poll;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +14,12 @@ public abstract class ArangoHandler<T> {
   protected final String collectionName;
   protected Class<T> mapper;
 
+  /**
+   * Constructor.
+   *
+   * @param collectionName the collection name to handle.
+   * @param mapper class to map returned objects to.
+   */
   public ArangoHandler(String collectionName, Class mapper) {
     this.connection = ArangoConnection.getInstance().getConnection();
     this.dbName = System.getenv("ARANGO_DB");

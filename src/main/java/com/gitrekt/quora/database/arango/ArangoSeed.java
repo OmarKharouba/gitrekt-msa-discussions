@@ -3,6 +3,7 @@ package com.gitrekt.quora.database.arango;
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDBException;
 import com.arangodb.entity.CollectionEntity;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,6 +19,12 @@ public class ArangoSeed {
   private final ArangoDB connection;
   private final String dbName;
 
+  /**
+   * Constructor for seed.
+   *
+   * @param seedPath the path of seed file.
+   * @param collectionName the collection name to seed.
+   */
   public ArangoSeed(String seedPath, String collectionName) {
     connection = ArangoConnection.getInstance().getConnection();
     this.seedPath = seedPath;
@@ -28,6 +35,7 @@ public class ArangoSeed {
     createCollection();
   }
 
+  /** Seed the collectionName with contents of seedPath. */
   public void seedCollection() {
     JsonArray seedObjects = parseSeed();
     try {
@@ -40,6 +48,7 @@ public class ArangoSeed {
     }
   }
 
+  /** Create Database If not exists. */
   private void createDatabase() {
     Collection<String> dbs = connection.getDatabases();
 
@@ -56,6 +65,7 @@ public class ArangoSeed {
     }
   }
 
+  /** Create the collection If not exists. */
   private void createCollection() {
     Collection<CollectionEntity> collections = connection.db(dbName).getCollections();
     for (CollectionEntity entity : collections) {
@@ -71,6 +81,11 @@ public class ArangoSeed {
     }
   }
 
+  /**
+   * Parse the seed file to JsonArray.
+   *
+   * @return JsonArray of elements;
+   */
   private JsonArray parseSeed() {
     Gson gson = new Gson();
     JsonReader reader;
@@ -84,11 +99,7 @@ public class ArangoSeed {
     return null;
   }
 
-  /**
-   * Sample Implementation for seeding.
-   *
-   * @param args
-   */
+  /** Sample Implementation for seeding. */
   public static void main(String[] args) {
     String seedPath = "src/main/resources/database/nosql/poll/poll_seed.json";
     ArangoSeed seed = new ArangoSeed(seedPath, "polls");

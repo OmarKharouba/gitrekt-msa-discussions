@@ -1,10 +1,10 @@
 package com.gitrekt.quora.server.middlewares;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import com.gitrekt.quora.exceptions.NotFoundException;
 import com.gitrekt.quora.models.Request;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import io.netty.buffer.ByteBuf;
 

@@ -6,6 +6,9 @@ import com.arangodb.entity.LoadBalancingStrategy;
 public class ArangoConnection {
   private ArangoDB connection;
 
+  /**
+   * Create a new Connection to ArangoDB.
+   */
   public ArangoConnection() {
     connection =
         new ArangoDB.Builder()

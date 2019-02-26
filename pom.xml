@@ -76,14 +76,6 @@
             <version>5.0.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-
-
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -142,7 +134,7 @@
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.0.0</version>
                     <configuration>
-                        <violationSeverity>warning</violationSeverity>
+                        <violationSeverity>info</violationSeverity>
                         <failOnViolation>true</failOnViolation>
                         <consoleOutput>true</consoleOutput>
                         <encoding>UTF-8</encoding>
