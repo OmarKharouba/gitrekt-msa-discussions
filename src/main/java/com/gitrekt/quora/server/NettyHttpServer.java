@@ -2,6 +2,8 @@ package com.gitrekt.quora.server;
 
 import com.gitrekt.quora.database.arango.ArangoSeed;
 import com.gitrekt.quora.database.arango.handlers.PollArangoHandler;
+import com.gitrekt.quora.database.postgres.handlers.PostgresHandler;
+import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
 import com.gitrekt.quora.models.Poll;
 import com.gitrekt.quora.queue.MessageQueueConsumer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -91,12 +93,16 @@ public class NettyHttpServer {
 
   /** Start the server. */
   public static void main(String[] args) {
-    try {
-      MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
-    } catch (Exception exception) {
-      LOGGER.severe(
-          String.format("Failed to start Message Queue Consumer %s", exception.getMessage()));
-    }
+    //    try {
+    //      MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
+    //    } catch (Exception exception) {
+    //      LOGGER.severe(
+    //          String.format("Failed to start Message Queue Consumer %s", exception.getMessage()));
+    //    }
+
+    UsersPostgresHandler pg = new UsersPostgresHandler();
+    System.out.println(pg.getUsers());
+
     NettyHttpServer server = new NettyHttpServer();
     server.init();
   }

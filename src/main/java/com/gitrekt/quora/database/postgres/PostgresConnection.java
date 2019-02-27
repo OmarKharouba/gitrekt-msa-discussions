@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class PostgresConnection {
 
   public Connection conn;
-  private HikariDataSource dataSource;
+  public HikariDataSource dataSource;
 
   public PostgresConnection() {
     initDatasource();
@@ -18,7 +18,13 @@ public class PostgresConnection {
   /** Set Database Pool. */
   private void initDatasource() {
     dataSource = new HikariDataSource();
-    dataSource.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
+    String url =
+        String.format(
+            "jdbc:postgresql://%s:%s/%s",
+            System.getenv("POSTGRES_HOST"),
+            System.getenv("POSTGRES_PORT"),
+            System.getenv("POSTGRES_DB"));
+    dataSource.setJdbcUrl(url);
     dataSource.setUsername(System.getenv("POSTGRES_USER"));
     dataSource.setPassword(System.getenv("POSTGRES_PASSWORD"));
     dataSource.addDataSourceProperty("serverName", System.getenv("POSTGRES_HOST"));
@@ -34,6 +40,10 @@ public class PostgresConnection {
     } catch (SQLException exception) {
       System.out.println(exception.getMessage());
     }
+  }
+
+  public Connection getConnection() {
+    return conn;
   }
 
   public void closeConnection() {
