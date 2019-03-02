@@ -1,6 +1,22 @@
-test:
-  image: maven
+image: docker
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay
+  COMPOSE_INTERACTIVE_NO_CLI: 1
+  DEPLOY_ENV: 1
+
+before_script:
+  - apk update
+  - apk upgrade
+  - apk add git
+  - git submodule sync --recursive
+  - apk add python python-dev py-pip build-base
+  - pip install docker-compose
+
+build:
   script:
-    - mvn clean install
-    - mvn checkstyle:check
-    - mvn test
+    - docker-compose up -d postgres
+    - docker-compose up server
