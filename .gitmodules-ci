@@ -1,3 +1,3 @@
 [submodule "submodules/database"]
 	path = submodules/database
-	url = https://gitlab.com/gitrekt-msa/db.git
+	url = ../../gitrekt-msa/db.git

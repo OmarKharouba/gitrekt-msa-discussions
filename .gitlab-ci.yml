@@ -7,11 +7,14 @@ variables:
   DOCKER_DRIVER: overlay
   COMPOSE_INTERACTIVE_NO_CLI: 1
   DEPLOY_ENV: 1
-  GIT_SUBMODULE_STRATEGY: recursive
 
 before_script:
   - apk update
   - apk upgrade
+  - rm -rf .gitmodules
+  - mv .gitmodules-ci .gitmodules
+  - apk add git
+  - git submodule update --init --recursive
   - apk add python python-dev py-pip build-base
   - pip install docker-compose
 
