@@ -21,4 +21,4 @@ before_script:
 build:
   script:
     - docker-compose up -d arangodb postgres
-    - docker-compose up --exit-code-from server server
+    - docker-compose run server mvn test
