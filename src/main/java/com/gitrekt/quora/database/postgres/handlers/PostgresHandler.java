@@ -1,8 +1,6 @@
 package com.gitrekt.quora.database.postgres.handlers;
 
-import com.arangodb.ArangoDB;
 import com.gitrekt.quora.database.postgres.PostgresConnection;
-import com.gitrekt.quora.models.User;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.GenerousBeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
@@ -12,6 +10,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
 
 public abstract class PostgresHandler<T> {
   protected final Connection connection;

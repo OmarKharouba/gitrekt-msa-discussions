@@ -20,5 +20,5 @@ before_script:
 
 build:
   script:
-    - docker-compose up -d postgres
-    - docker-compose up server
+    - docker-compose up -d arangodb postgres
+    - docker-compose up --exit-code-from server server

@@ -6,4 +6,6 @@
 
 <suppressions>
     <suppress checks="CustomImportOrder" files="."/>
+    <suppress checks="AvoidStarImport" files="."/>
+    <suppress checks="NonEmptyAtclauseDescription" files="."/>
 </suppressions>
