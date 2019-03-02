@@ -37,6 +37,9 @@ services:
   postgres:
     restart: always
     image: postgres
+    build:
+      dockerfile: ./docker/postgres/Dockerfile
+      context: .
     environment:
       - POSTGRES_DB=gitrekt_quora
       - POSTGRES_USER=root
