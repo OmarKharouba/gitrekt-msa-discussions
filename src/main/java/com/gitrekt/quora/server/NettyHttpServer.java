@@ -92,8 +92,8 @@ public class NettyHttpServer {
     //          String.format("Failed to start Message Queue Consumer %s", exception.getMessage()));
     //    }
 
-//    UsersPostgresHandler pg = new UsersPostgresHandler();
-//    System.out.println(pg.getUsers());
+    //    UsersPostgresHandler pg = new UsersPostgresHandler();
+    //    System.out.println(pg.getUsers());
 
     NettyHttpServer server = new NettyHttpServer();
     server.init();

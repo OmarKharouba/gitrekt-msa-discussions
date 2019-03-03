@@ -19,13 +19,13 @@ public class MessageQueueProducerMiddleware extends SimpleChannelInboundHandler<
     Channel channel = MessageQueueConnection.getInstance().createChannel();
     channel.basicPublish("", System.getenv("QUEUE_NAME"), null, msg.toString().getBytes());
     channel.close();
-//    JsonObject jsonObject = msg.getBody();
-//    HashMap<String, Object> map = new HashMap<>();
-//    for (String key : jsonObject.keySet()) {
-//      map.put(key, jsonObject.get(key).getAsString());
-//    }
-//    Command command = new SignUpCommand(map);
-//    command.execute();
-//    ctx.channel().writeAndFlush(msg).channel().closeFuture();
+    //    JsonObject jsonObject = msg.getBody();
+    //    HashMap<String, Object> map = new HashMap<>();
+    //    for (String key : jsonObject.keySet()) {
+    //      map.put(key, jsonObject.get(key).getAsString());
+    //    }
+    //    Command command = new SignUpCommand(map);
+    //    command.execute();
+    //    ctx.channel().writeAndFlush(msg).channel().closeFuture();
   }
 }

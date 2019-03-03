@@ -69,6 +69,13 @@
             <version>1.7</version>
         </dependency>
 
+        <!-- Arango -->
+        <dependency>
+            <groupId>com.arangodb</groupId>
+            <artifactId>arangodb-java-driver</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
         <dependency>
             <groupId>com.zaxxer</groupId>

@@ -15,7 +15,7 @@ public class UsersPostgresHandler extends PostgresHandler<User> {
     return super.findAll();
   }
 
-  public void insertUser(Object ...params) throws SQLException {
+  public void insertUser(Object... params) throws SQLException {
     super.insert("CALL Insert_User(?, ?, ?, ?, ?, ?)", params);
   }
 }
