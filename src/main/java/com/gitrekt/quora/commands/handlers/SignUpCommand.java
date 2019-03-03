@@ -17,14 +17,14 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 public class SignUpCommand extends Command {
 
   private static final String[] argumentNames =
-      new String[]{"username", "email", "password", "confirmPassword", "firstName", "lastName"};
+      new String[] {"username", "email", "password", "confirmPassword", "firstName", "lastName"};
 
   public SignUpCommand(HashMap<String, Object> args) {
     super(args);
   }
 
   @Override
-  public void execute() throws SQLException {
+  public String execute() throws SQLException {
     checkArguments(argumentNames);
 
     String email = (String) args.get("email");
@@ -40,6 +40,8 @@ public class SignUpCommand extends Command {
 
     UsersPostgresHandler pg = new UsersPostgresHandler();
     pg.insertUser(UUID.randomUUID(), email, username, hashedPassword, firstName, lastName);
+
+    return "SignUp Successful !";
   }
 
   private void validate(String email, String password, String confirmPassword)

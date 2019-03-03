@@ -16,7 +16,7 @@ public abstract class Command {
     this.args = args;
   }
 
-  public abstract void execute() throws SQLException;
+  public abstract String execute() throws SQLException;
 
   protected void checkArguments(String[] requiredArgs) {
     StringBuilder stringBuilder = new StringBuilder();
