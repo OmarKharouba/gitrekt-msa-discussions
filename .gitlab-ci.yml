@@ -21,4 +21,4 @@ before_script:
 build:
   script:
     - docker-compose up -d arangodb postgres
-    - docker-compose run server mvn test
+    - docker-compose run server sh -c  "mvn test && mvn checkstyle:check"
