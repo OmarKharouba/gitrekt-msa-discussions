@@ -25,7 +25,10 @@ public class MessageQueueProducerMiddleware extends SimpleChannelInboundHandler<
     //      map.put(key, jsonObject.get(key).getAsString());
     //    }
     //    Command command = new SignUpCommand(map);
-    //    command.execute();
-    //    ctx.channel().writeAndFlush(msg).channel().closeFuture();
+    //    Command command = new LoginCommand(map);
+    //    final String token = command.execute();
+    //    System.err.println(token);
+    //    System.err.println(Jwt.verifyAndDecode(token));
+    ctx.channel().writeAndFlush(msg).channel().closeFuture();
   }
 }
