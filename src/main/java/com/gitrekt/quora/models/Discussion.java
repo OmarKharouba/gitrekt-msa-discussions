@@ -59,8 +59,8 @@ public class Discussion {
     this.subscribersCount = subscribersCount;
   }
 
-  public void setPublic(boolean aPublic) {
-    isPublic = aPublic;
+  public void setPublic(boolean isPublic) {
+    this.isPublic = isPublic;
   }
 
   public void setPollId(String pollId) {
@@ -73,5 +73,33 @@ public class Discussion {
 
   public void setUserId(String userId) {
     this.userId = userId;
+  }
+
+  @Override
+  public String toString() {
+    return "Discussion{"
+        + "id='"
+        + id
+        + '\''
+        + ", title='"
+        + title
+        + '\''
+        + ", body='"
+        + body
+        + '\''
+        + ", subscribersCount="
+        + subscribersCount
+        + ", isPublic="
+        + isPublic
+        + ", pollId='"
+        + pollId
+        + '\''
+        + ", topicId='"
+        + topicId
+        + '\''
+        + ", userId='"
+        + userId
+        + '\''
+        + '}';
   }
 }
