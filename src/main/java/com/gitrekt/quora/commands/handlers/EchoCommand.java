@@ -12,6 +12,6 @@ public class EchoCommand extends Command {
 
   @Override
   public void execute() {
-
+    System.out.println("I echo in a thread!.");
   }
 }
