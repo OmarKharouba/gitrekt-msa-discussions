@@ -1,6 +1,8 @@
 package com.gitrekt.quora.server;
 
+import com.gitrekt.quora.commands.handlers.EchoCommand;
 import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
+import com.gitrekt.quora.pooling.ThreadPool;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -92,8 +94,14 @@ public class NettyHttpServer {
     //          String.format("Failed to start Message Queue Consumer %s", exception.getMessage()));
     //    }
 
-    UsersPostgresHandler pg = new UsersPostgresHandler();
-    System.out.println(pg.getUsers());
+    //    UsersPostgresHandler pg = new UsersPostgresHandler();
+    //    System.out.println(pg.getUsers());
+
+
+    // command implements runnable
+    // use thread pool to run the command.
+    EchoCommand command = new EchoCommand(null);
+    ThreadPool.getInstance().run(command);
 
     NettyHttpServer server = new NettyHttpServer();
     server.init();
