@@ -1,5 +1,6 @@
 package com.gitrekt.quora.server.middlewares;
 
+import com.gitrekt.quora.database.postgres.handlers.DiscussionsPostgresHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -9,6 +10,15 @@ public class EchoJsonMiddleware extends ChannelOutboundHandlerAdapter {
   public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)
       throws Exception {
     // echo back the msg
-    ctx.write(msg);
+    Object o=new DiscussionsPostgresHandler().getDiscussions();
+    ctx.write(o);
+  }
+
+  static class Pair{
+    int x,y;
+    Pair(int a,int b){
+      x=a;
+      y=b;
+    }
   }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class DiscussionsPostgresHandler extends PostgresHandler<Discussion> {
 
-  DiscussionsPostgresHandler() {
+  public DiscussionsPostgresHandler() {
     super("Discussions", Discussion.class);
   }
 
