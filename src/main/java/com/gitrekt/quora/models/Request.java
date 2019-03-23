@@ -1,5 +1,6 @@
 package com.gitrekt.quora.models;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -7,10 +8,12 @@ import java.util.Map;
 
 /** Model for HttpRequest. */
 public class Request {
+
   private String httpMethod;
   private Map<String, List<String>> queryParams;
   private JsonObject body;
   private boolean isAuthenticated;
+  private String userId;
   private String path;
   private String jwt;
   private String queue;
@@ -80,30 +83,17 @@ public class Request {
     this.queryParams = queryParams;
   }
 
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
   @Override
   public String toString() {
-    return "Request{"
-        + "httpMethod='"
-        + httpMethod
-        + '\''
-        + ", queryParams="
-        + queryParams
-        + ", body="
-        + body
-        + ", isAuthenticated="
-        + isAuthenticated
-        + ", path='"
-        + path
-        + '\''
-        + ", jwt='"
-        + jwt
-        + '\''
-        + ", queue='"
-        + queue
-        + '\''
-        + ", command='"
-        + command
-        + '\''
-        + '}';
+    Gson gson = new Gson();
+    return gson.toJson(this, Request.class);
   }
 }
