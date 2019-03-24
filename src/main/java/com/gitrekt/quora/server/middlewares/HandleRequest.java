@@ -39,9 +39,4 @@ public class HandleRequest extends SimpleChannelInboundHandler<Request> {
     channel.basicPublish(DEFAULT_EXCHANGE, msg.getQueue(), properties, msg.toString().getBytes());
     channel.close();
   }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    super.exceptionCaught(ctx, cause);
-  }
 }

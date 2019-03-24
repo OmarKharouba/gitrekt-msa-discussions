@@ -17,6 +17,8 @@ public class MessageQueueConnection {
 
   private static final Logger LOGGER = Logger.getLogger(MessageQueueConnection.class.getName());
 
+  private static MessageQueueConnection instance;
+
   /*
    * Connection to the RabbitMQ service.
    */
@@ -32,22 +34,16 @@ public class MessageQueueConnection {
     connection = connectionFactory.newConnection();
   }
 
-  private static class MessageQueueConnectionHelper {
-
-    private static MessageQueueConnection INSTANCE;
-
-    static {
-      try {
-        INSTANCE = new MessageQueueConnection();
-      } catch (Exception exception) {
-        LOGGER.severe("Error creating a connection to RabbitMQ service");
-        exception.printStackTrace();
+  public static MessageQueueConnection getInstance() throws IOException, TimeoutException {
+    if (instance != null) {
+      return instance;
+    }
+    synchronized (MessageQueueConnection.class) {
+      if (instance == null) {
+        instance = new MessageQueueConnection();
       }
     }
-  }
-
-  public static MessageQueueConnection getInstance() {
-    return MessageQueueConnectionHelper.INSTANCE;
+    return instance;
   }
 
   /**

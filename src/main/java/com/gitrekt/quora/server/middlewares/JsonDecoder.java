@@ -99,8 +99,7 @@ public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
         }
       }
     }
-    ctx.writeAndFlush(request);
-//    ctx.fireChannelRead(request);
+    ctx.fireChannelRead(request);
   }
 
   @Override
