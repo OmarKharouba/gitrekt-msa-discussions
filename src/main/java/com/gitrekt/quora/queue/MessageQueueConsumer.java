@@ -40,7 +40,7 @@ public class MessageQueueConsumer {
    * @throws IOException if an error occurred creating either the Channel or Queue, or when adding
    *     the Consumer.
    */
-  private MessageQueueConsumer() throws IOException {
+  private MessageQueueConsumer() throws IOException, TimeoutException {
     final String queueName = System.getenv("QUEUE_NAME");
 
     /*
@@ -108,7 +108,7 @@ public class MessageQueueConsumer {
     channel.close();
   }
 
-  public static MessageQueueConsumer getInstance() throws IOException {
+  public static MessageQueueConsumer getInstance() throws IOException, TimeoutException {
     if (instance != null) {
       return instance;
     }
