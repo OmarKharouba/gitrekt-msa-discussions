@@ -108,6 +108,12 @@ public class MessageQueueConsumer {
     channel.close();
   }
 
+  /**
+   * Returns the Singleton Instance.
+   * @return The Message Queue Consumer Instance
+   * @throws IOException If an error occurred
+   * @throws TimeoutException If an error occurred
+   */
   public static MessageQueueConsumer getInstance() throws IOException, TimeoutException {
     if (instance != null) {
       return instance;

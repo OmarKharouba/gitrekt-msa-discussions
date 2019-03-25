@@ -11,6 +11,9 @@ public class Config {
 
   private static Config instance;
 
+  /**
+   * Properties Map.
+   */
   private Properties properties;
 
   private Config() throws IOException {
@@ -22,10 +25,21 @@ public class Config {
     properties.load(inputStream);
   }
 
+  /**
+   * Returns the property mapped by @code name or
+   * null if it does not exist.
+   * @param name The property name
+   * @return The result or null
+   */
   public String getProperty(String name) {
     return this.properties.getProperty(name);
   }
 
+  /**
+   * Returns the Singleton Instance.
+   * @return The Configuration Instance
+   * @throws IOException If an IO error occurs when reading the file
+   */
   public static Config getInstance() throws IOException {
     if (instance != null) {
       return instance;

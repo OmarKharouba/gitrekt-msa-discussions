@@ -34,6 +34,12 @@ public class MessageQueueConnection {
     connection = connectionFactory.newConnection();
   }
 
+  /**
+   * Returns the Singleton Instance.
+   * @return The Message Queue Connection Instance
+   * @throws IOException If an error occurred
+   * @throws TimeoutException If an error occurred
+   */
   public static MessageQueueConnection getInstance() throws IOException, TimeoutException {
     if (instance != null) {
       return instance;
