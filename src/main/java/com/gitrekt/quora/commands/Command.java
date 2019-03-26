@@ -12,10 +12,6 @@ public abstract class Command {
     this.args = args;
   }
 
-  public void setArgs(HashMap<String, Object> args) {
-    this.args = args;
-  }
-
   public abstract String execute() throws SQLException;
 
   protected void checkArguments(String[] requiredArgs) {

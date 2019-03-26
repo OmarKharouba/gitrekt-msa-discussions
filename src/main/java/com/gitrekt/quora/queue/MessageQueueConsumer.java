@@ -1,6 +1,9 @@
 package com.gitrekt.quora.queue;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
@@ -8,6 +11,7 @@ import com.rabbitmq.client.Envelope;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -59,10 +63,48 @@ public class MessageQueueConsumer {
     return new DefaultConsumer(channel) {
       @Override
       public void handleDelivery(
-          String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+          String consumerTag,
+          Envelope envelope,
+          final AMQP.BasicProperties properties,
+          final byte[] body) {
 
-        String message = new String(body, StandardCharsets.UTF_8);
-        LOGGER.info(String.format("Consuming the received message (%s).", message));
+        Runnable runnable =
+            new Runnable() {
+              @Override
+              public void run() {
+                JsonObject request =
+                    new JsonParser()
+                        .parse(new String(body, StandardCharsets.UTF_8))
+                        .getAsJsonObject();
+                String commandName = request.get("command").getAsString();
+                HashMap<String, Object> arguments = new HashMap<>();
+                JsonObject requestBody = request.getAsJsonObject("body");
+                for (String key : requestBody.keySet()) {
+                  arguments.put(key, requestBody.get(key).getAsString());
+                }
+
+                String replyTo = properties.getReplyTo();
+                BasicProperties replyProperties =
+                    new BasicProperties.Builder()
+                        .correlationId(properties.getCorrelationId())
+                        .build();
+                JsonObject response = new JsonObject();
+                // Submit Command to be executed and Add Error handling.
+                // Fill response with code and message and any other info if needed.
+                try {
+                  Channel channel = MessageQueueConnection.getInstance().createChannel();
+                  channel.basicPublish(
+                      "",
+                      replyTo,
+                      replyProperties,
+                      response.toString().getBytes(StandardCharsets.UTF_8));
+                  channel.close();
+                } catch (IOException | TimeoutException e) {
+                  e.printStackTrace();
+                }
+              }
+            };
+        // submit Runnable to Thread Pool.
       }
     };
   }
