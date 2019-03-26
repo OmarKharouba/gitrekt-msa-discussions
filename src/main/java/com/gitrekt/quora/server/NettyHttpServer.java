@@ -97,11 +97,10 @@ public class NettyHttpServer {
     //    UsersPostgresHandler pg = new UsersPostgresHandler();
     //    System.out.println(pg.getUsers());
 
-
     // command implements runnable
     // use thread pool to run the command.
-    EchoCommand command = new EchoCommand(null);
-    ThreadPool.getInstance().run(command);
+    //    EchoCommand command = new EchoCommand(null);
+    //    ThreadPool.getInstance().run(command);
 
     NettyHttpServer server = new NettyHttpServer();
     server.init();

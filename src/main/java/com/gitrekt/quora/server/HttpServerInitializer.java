@@ -3,8 +3,8 @@ package com.gitrekt.quora.server;
 import com.gitrekt.quora.server.middlewares.EchoJsonMiddleware;
 import com.gitrekt.quora.server.middlewares.JsonDecoder;
 import com.gitrekt.quora.server.middlewares.JsonEncoder;
-import com.gitrekt.quora.server.middlewares.MessageQueueProducerMiddleware;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -23,7 +23,8 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
   protected void initChannel(SocketChannel socketChannel) throws Exception {
     CorsConfig corsConfig =
         CorsConfigBuilder.forAnyOrigin()
-            .allowedRequestHeaders("X-Requested-With", "Content-Type", "Content-Length")
+            .allowedRequestHeaders(
+                "X-Requested-With", "Content-Type", "Content-Length", "Authorization")
             .allowedRequestMethods(
                 HttpMethod.GET,
                 HttpMethod.POST,
@@ -43,6 +44,11 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
     // sample middleware
     pipeline.addLast(new EchoJsonMiddleware());
     // add your own middleware here
-    pipeline.addLast(new MessageQueueProducerMiddleware());
+  }
+
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    super.exceptionCaught(ctx, cause);
+    System.err.println("ERROR");
   }
 }

@@ -1,5 +1,7 @@
 package com.gitrekt.quora.server.middlewares;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.gitrekt.quora.authentication.Jwt;
 import com.gitrekt.quora.exceptions.NotFoundException;
 import com.gitrekt.quora.models.Request;
 
@@ -13,6 +15,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
   @Override
@@ -86,7 +89,14 @@ public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
     if (authHeader != null) {
       String[] auth = authHeader.split(" ");
       if (auth.length > 1) {
-        request.setJwt(auth[1]);
+        try {
+          Map<String, Object> claims = Jwt.verifyAndDecode(auth[1]);
+          request.setJwt(auth[1]);
+          request.setUserId((String) claims.get("userId"));
+          request.setAuthenticated(true);
+        } catch (JWTVerificationException jwtVerificationException) {
+          request.setAuthenticated(false);
+        }
       }
     }
     ctx.fireChannelRead(request);
