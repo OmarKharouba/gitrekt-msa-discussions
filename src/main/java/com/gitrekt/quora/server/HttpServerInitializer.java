@@ -42,8 +42,9 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
     pipeline.addLast(new JsonDecoder());
 
     // sample middleware
-    pipeline.addLast(new EchoJsonMiddleware());
+    // pipeline.addLast(new EchoJsonMiddleware());
     // add your own middleware here
+    pipeline.addLast(new HandleRequest());
   }
 
   @Override
