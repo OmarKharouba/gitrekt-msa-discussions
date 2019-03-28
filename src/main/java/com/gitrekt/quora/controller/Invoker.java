@@ -15,6 +15,9 @@ public final class Invoker {
 
   private static final Config CONFIG = Config.getInstance();
 
+  /**
+   * Run the command using reflection.
+   */
   public static Object invoke(String commandName, HashMap<String, Object> arguments)
       throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException, SQLException, BadRequestException,

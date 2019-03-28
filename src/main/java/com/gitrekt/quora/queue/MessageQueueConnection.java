@@ -6,6 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -17,29 +18,39 @@ public class MessageQueueConnection {
 
   private static final Logger LOGGER = Logger.getLogger(MessageQueueConnection.class.getName());
 
-  private static MessageQueueConnection instance;
-
-  static {
-    try {
-      instance = new MessageQueueConnection();
-    } catch (IOException | TimeoutException e) {
-      throw new ExceptionInInitializerError(e);
-    }
-  }
+  private static MessageQueueConnection instance = new MessageQueueConnection();
+  private static long retryDelay = 3000;
 
   /*
    * Connection to the RabbitMQ service.
    */
   private Connection connection;
 
-  private MessageQueueConnection() throws IOException, TimeoutException {
+  private MessageQueueConnection() {
     ConnectionFactory connectionFactory = new ConnectionFactory();
+    connectionFactory.setAutomaticRecoveryEnabled(true);
+
     connectionFactory.setHost(System.getenv("RABBIT_HOST"));
     connectionFactory.setPort(Integer.parseInt(System.getenv("RABBIT_PORT")));
     connectionFactory.setUsername(System.getenv("RABBIT_USERNAME"));
     connectionFactory.setPassword(System.getenv("RABBIT_PASSWORD"));
 
-    connection = connectionFactory.newConnection();
+    boolean isConnected = false;
+    while (!isConnected) {
+      try {
+        connection = connectionFactory.newConnection();
+        isConnected = true;
+      } catch (Exception exception) {
+        try {
+          Thread.sleep(retryDelay);
+          LOGGER.log(
+              Level.ALL,
+              String.format("Problem connecting with RabbitMQ waiting %d ms", retryDelay));
+        } catch (InterruptedException interruptedException) {
+            // TODO:: Do something useful
+        }
+      }
+    }
   }
 
   /**
