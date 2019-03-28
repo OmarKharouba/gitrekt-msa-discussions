@@ -1,6 +1,6 @@
 package com.gitrekt.quora.server;
 
-import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
+import com.gitrekt.quora.queue.MessageQueueConsumer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -10,6 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.logging.Logger;
 
@@ -85,16 +86,11 @@ public class NettyHttpServer {
 
   /** Start the server. */
   public static void main(String[] args) {
-    //    try {
-    //      MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
-    //    } catch (Exception exception) {
-    //      LOGGER.severe(
-    //          String.format("Failed to start Message Queue Consumer %s", exception.getMessage()));
-    //    }
-
-    //    UsersPostgresHandler pg = new UsersPostgresHandler();
-    //    System.out.println(pg.getUsers());
-
+    try {
+      MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     NettyHttpServer server = new NettyHttpServer();
     server.init();
   }
