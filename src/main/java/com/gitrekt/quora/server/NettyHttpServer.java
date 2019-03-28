@@ -87,11 +87,11 @@ public class NettyHttpServer {
   /** Start the server. */
   public static void main(String[] args) {
     try {
-      MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
+       new MessageQueueConsumer();
     } catch (IOException e) {
       e.printStackTrace();
     }
-    NettyHttpServer server = new NettyHttpServer();
-    server.init();
+//    NettyHttpServer server = new NettyHttpServer();
+//    server.init();
   }
 }
