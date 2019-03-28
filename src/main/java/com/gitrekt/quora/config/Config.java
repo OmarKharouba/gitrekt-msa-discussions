@@ -14,8 +14,8 @@ public class Config {
   static {
     try {
       instance = new Config();
-    } catch (IOException e) {
-      throw new ExceptionInInitializerError(e);
+    } catch (IOException exception) {
+      throw new ExceptionInInitializerError(exception);
     }
   }
 

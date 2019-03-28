@@ -1,63 +1,20 @@
 version: "3"
 services:
-  nginx:
-    restart: always
-    build:
-      dockerfile: ./Dockerfile
-      context: docker/nginx
-    ports:
-      - 80:80
-
-  rabbit:
-    restart: always
-    image: rabbitmq:3.7.9-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    ports:
-      - 15672:15672
-      - 5672:5672
-
-  arangodb:
-    restart: always
-    image: arangodb:latest
-    volumes:
-      - ./arangodb-data/:/var/lib/arangodb3
-    ports:
-      - 8529:8529
-    environment:
-      - ARANGO_ROOT_PASSWORD=root
-
-  redis:
-    restart: always
-    image: redis
-    ports:
-      - 6379:6379
-
-  postgres:
-    restart: always
-    image: postgres
-    build:
-      dockerfile: ./docker/postgres/Dockerfile
-      context: .
-    environment:
-      - POSTGRES_DB=gitrekt_quora
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-    volumes:
-      - ./postgres-data/:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-
-  server:
+  user-auth-server:
     restart: always
     build:
       dockerfile: ./Dockerfile
       context: .
-    expose:
-      - 3000
+    ports:
+      - 3001:3001
     volumes:
       - ./:/usr/src/app
     command: "sh -c \"./watch.sh\""
+    networks:
+      - dev-conf_gitrekt-network
     env_file:
       - .env
+
+networks:
+  dev-conf_gitrekt-network:
+    external: true

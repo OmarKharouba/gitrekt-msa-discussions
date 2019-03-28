@@ -13,6 +13,7 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
@@ -101,19 +102,20 @@ public class MessageQueueConsumer {
                   Object result = Invoker.invoke(commandName, arguments);
                   response.addProperty("statusCode", "200");
                   response.addProperty("response", result.toString());
-                } catch (ServerException e) {
-                  response.addProperty("statusCode", String.valueOf(e.getCode().code()));
-                  response.addProperty("error", e.getMessage());
-                } catch (SQLException e) {
+                } catch (ServerException exception) {
+                  response.addProperty("statusCode", String.valueOf(exception.getCode().code()));
+                  response.addProperty("error", exception.getMessage());
+                } catch (SQLException exception) {
                   response.addProperty(
                       "statusCode", String.valueOf(HttpResponseStatus.BAD_REQUEST));
-                  response.addProperty("error", e.getMessage());
-                } catch (Exception e) {
+                  response.addProperty("error", exception.getMessage());
+                } catch (Exception exception) {
                   response.addProperty(
                       "statusCode", String.valueOf(HttpResponseStatus.INTERNAL_SERVER_ERROR));
                   response.addProperty("error", "Internal Server Error");
                   LOGGER.severe(
-                      String.format("Error executing command %s\n%s", commandName, e.getMessage()));
+                      String.format(
+                          "Error executing command %s\n%s", commandName, exception.getMessage()));
                 }
 
                 try {
@@ -124,10 +126,10 @@ public class MessageQueueConsumer {
                       replyProperties,
                       response.toString().getBytes(StandardCharsets.UTF_8));
                   channel.close();
-                } catch (IOException | TimeoutException e) {
+                } catch (IOException | TimeoutException exception) {
                   LOGGER.severe(
                       String.format(
-                          "Error sending the response to main server\n%s", e.getMessage()));
+                          "Error sending the response to main server\n%s", exception.getMessage()));
                 }
               }
             };
