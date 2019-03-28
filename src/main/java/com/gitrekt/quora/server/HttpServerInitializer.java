@@ -1,6 +1,6 @@
 package com.gitrekt.quora.server;
 
-import com.gitrekt.quora.server.middlewares.EchoJsonMiddleware;
+import com.gitrekt.quora.server.middlewares.HandleRequest;
 import com.gitrekt.quora.server.middlewares.JsonDecoder;
 import com.gitrekt.quora.server.middlewares.JsonEncoder;
 
