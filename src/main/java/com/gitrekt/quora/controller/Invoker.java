@@ -1,7 +1,10 @@
 package com.gitrekt.quora.controller;
 
 import com.gitrekt.quora.commands.Command;
-import com.gitrekt.quora.database.postgres.handlers.PostgresHandler;
+import com.gitrekt.quora.config.Config;
+import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
+import com.gitrekt.quora.exceptions.AuthenticationException;
+import com.gitrekt.quora.exceptions.BadRequestException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -10,24 +13,25 @@ import java.util.HashMap;
 // Would be better to store all commands in a Map commandName -> Command
 public final class Invoker {
 
+  private static final Config CONFIG = Config.getInstance();
+
   public static Object invoke(String commandName, HashMap<String, Object> arguments)
       throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
-          InvocationTargetException, InstantiationException, SQLException {
-    // Use config to get the command name.
-    //    String commandName = "";
-    //    String commandPackageName = "";
-    String commandClassPath = Command.class.getPackage().getName() + ".handlers." + commandName;
+          InvocationTargetException, InstantiationException, SQLException, BadRequestException,
+          AuthenticationException {
+
+    String commandClassPath =
+        CONFIG.getProperty("commandsPackage") + "." + CONFIG.getProperty(commandName);
     Class<?> commandClass = getClass(commandClassPath);
     Constructor<?> commandConstructor = getConstructor(commandClass, HashMap.class);
 
-    //    String postgresPackageName = "";
-    String postgresClassPath =
-        PostgresHandler.class.getPackage().getName() + ".UsersPostgresHandler";
+    String postgresClassPath = CONFIG.getProperty("postgresPackage") + ".UsersPostgresHandler";
     Constructor<?> postgresConstructor = getConstructor(getClass(postgresClassPath));
 
     Command command = (Command) commandConstructor.newInstance(arguments);
 
-    //    command.setHandler();
+    command.setPostgresHandler((UsersPostgresHandler) postgresConstructor.newInstance());
+
     return command.execute();
   }
 

@@ -19,6 +19,14 @@ public class MessageQueueConnection {
 
   private static MessageQueueConnection instance;
 
+  static {
+    try {
+      instance = new MessageQueueConnection();
+    } catch (IOException | TimeoutException e) {
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+
   /*
    * Connection to the RabbitMQ service.
    */
@@ -36,19 +44,10 @@ public class MessageQueueConnection {
 
   /**
    * Returns the Singleton Instance.
+   *
    * @return The Message Queue Connection Instance
-   * @throws IOException If an error occurred
-   * @throws TimeoutException If an error occurred
    */
-  public static MessageQueueConnection getInstance() throws IOException, TimeoutException {
-    if (instance != null) {
-      return instance;
-    }
-    synchronized (MessageQueueConnection.class) {
-      if (instance == null) {
-        instance = new MessageQueueConnection();
-      }
-    }
+  public static MessageQueueConnection getInstance() {
     return instance;
   }
 

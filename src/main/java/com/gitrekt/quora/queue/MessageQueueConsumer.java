@@ -1,5 +1,8 @@
 package com.gitrekt.quora.queue;
 
+import com.gitrekt.quora.controller.Invoker;
+import com.gitrekt.quora.exceptions.ServerException;
+import com.gitrekt.quora.pooling.ThreadPool;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.rabbitmq.client.AMQP;
@@ -9,8 +12,10 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -42,7 +47,7 @@ public class MessageQueueConsumer {
     /*
      * Declare a queue that is persistent/durable.
      */
-    channel.queueDeclare(queueName, true, false, false, null);
+    channel.queueDeclare(queueName, false, false, false, null);
 
     /*
      * Consume messages from the queue, acknowledge when
@@ -76,6 +81,7 @@ public class MessageQueueConsumer {
                     new JsonParser()
                         .parse(new String(body, StandardCharsets.UTF_8))
                         .getAsJsonObject();
+
                 String commandName = request.get("command").getAsString();
                 HashMap<String, Object> arguments = new HashMap<>();
                 JsonObject requestBody = request.getAsJsonObject("body");
@@ -88,9 +94,28 @@ public class MessageQueueConsumer {
                     new BasicProperties.Builder()
                         .correlationId(properties.getCorrelationId())
                         .build();
+
                 JsonObject response = new JsonObject();
-                // Submit Command to be executed and Add Error handling.
-                // Fill response with code and message and any other info if needed.
+
+                try {
+                  Object result = Invoker.invoke(commandName, arguments);
+                  response.addProperty("statusCode", "200");
+                  response.addProperty("response", result.toString());
+                } catch (ServerException e) {
+                  response.addProperty("statusCode", String.valueOf(e.getCode().code()));
+                  response.addProperty("error", e.getMessage());
+                } catch (SQLException e) {
+                  response.addProperty(
+                      "statusCode", String.valueOf(HttpResponseStatus.BAD_REQUEST));
+                  response.addProperty("error", e.getMessage());
+                } catch (Exception e) {
+                  response.addProperty(
+                      "statusCode", String.valueOf(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+                  response.addProperty("error", "Internal Server Error");
+                  LOGGER.severe(
+                      String.format("Error executing command %s\n%s", commandName, e.getMessage()));
+                }
+
                 try {
                   Channel channel = MessageQueueConnection.getInstance().createChannel();
                   channel.basicPublish(
@@ -100,11 +125,13 @@ public class MessageQueueConsumer {
                       response.toString().getBytes(StandardCharsets.UTF_8));
                   channel.close();
                 } catch (IOException | TimeoutException e) {
-                  e.printStackTrace();
+                  LOGGER.severe(
+                      String.format(
+                          "Error sending the response to main server\n%s", e.getMessage()));
                 }
               }
             };
-        // submit Runnable to Thread Pool.
+        ThreadPool.getInstance().run(runnable);
       }
     };
   }
