@@ -3,6 +3,7 @@ package com.gitrekt.quora.commands.handlers;
 import com.gitrekt.quora.commands.Command;
 import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
 import com.gitrekt.quora.exceptions.BadRequestException;
+import com.gitrekt.quora.models.User;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class SignUpCommand extends Command {
   }
 
   @Override
-  public String execute() throws SQLException {
+  public String execute() throws SQLException, BadRequestException {
     checkArguments(argumentNames);
 
     String email = (String) args.get("email");
@@ -38,8 +39,8 @@ public class SignUpCommand extends Command {
     String firstName = (String) args.get("firstName");
     String lastName = (String) args.get("lastName");
 
-    UsersPostgresHandler pg = new UsersPostgresHandler();
-    pg.insertUser(UUID.randomUUID(), email, username, hashedPassword, firstName, lastName);
+    postgresHandler.insertUser(
+        UUID.randomUUID(), email, username, hashedPassword, firstName, lastName);
 
     return "SignUp Successful !";
   }

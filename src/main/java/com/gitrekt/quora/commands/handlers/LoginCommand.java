@@ -26,13 +26,12 @@ public class LoginCommand extends Command {
   }
 
   @Override
-  public String execute() throws SQLException {
+  public String execute() throws SQLException, BadRequestException, AuthenticationException {
     checkArguments(argumentNames);
     String email = (String) args.get("email");
     String password = (String) args.get("password");
 
-    UsersPostgresHandler pg = new UsersPostgresHandler();
-    User user = pg.getUserPassword(email);
+    User user = postgresHandler.getUserPassword(email);
     if (user == null) {
       throw new BadRequestException("No account with this email was found");
     }
