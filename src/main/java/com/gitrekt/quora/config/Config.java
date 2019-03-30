@@ -1,13 +1,11 @@
 package com.gitrekt.quora.config;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class Config {
-
-  private static final Logger LOGGER = Logger.getLogger(Config.class.getName());
 
   private static Config instance;
 
@@ -42,8 +40,33 @@ public class Config {
   }
 
   /**
-   * Returns the Singleton Instance.
+   * Set value of property.
    *
+   * @param key key of the property
+   * @param value value of the property
+   */
+  public void setProperty(String key, String value) throws IOException {
+    this.properties.setProperty(key, value);
+    writeConfigFile();
+  }
+
+  /** Delete property from config file. */
+  public void deleteProperty(String key) throws IOException {
+    this.properties.remove(key);
+    writeConfigFile();
+  }
+
+  /**
+   * Write the config file to the disk.
+   */
+  private void writeConfigFile() throws IOException {
+    properties.store(
+        new FileOutputStream(getClass().getClassLoader().getResource("config.cfg").getFile()),
+        "Service Properties");
+  }
+
+  /**
+   * Returns the Singleton Instance.
    * @return The Configuration Instance
    */
   public static Config getInstance() {

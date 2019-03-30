@@ -15,9 +15,8 @@ before_script:
   - mv .gitmodules-ci .gitmodules
   - apk add git
   - git submodule update --init --recursive
-  - apk add python python-dev py-pip build-base
+  - apk add python python-dev py-pip build-base libffi-dev openssl-dev libgcc
   - pip install docker-compose
-
 build:
   script:
     - docker-compose -f docker-compose-ci.yml up -d arangodb postgres

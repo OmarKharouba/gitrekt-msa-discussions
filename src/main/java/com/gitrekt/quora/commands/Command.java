@@ -1,9 +1,9 @@
 package com.gitrekt.quora.commands;
 
-import com.gitrekt.quora.database.postgres.handlers.PostgresHandler;
 import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
 import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 

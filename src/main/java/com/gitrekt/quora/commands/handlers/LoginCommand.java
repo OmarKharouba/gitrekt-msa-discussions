@@ -2,14 +2,14 @@ package com.gitrekt.quora.commands.handlers;
 
 import com.gitrekt.quora.authentication.Jwt;
 import com.gitrekt.quora.commands.Command;
-import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
 import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
 import com.gitrekt.quora.models.User;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 /**
  * This command is responsible for login. It does so by getting the user by the provided email from

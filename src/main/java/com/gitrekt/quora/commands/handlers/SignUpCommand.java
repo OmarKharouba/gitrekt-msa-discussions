@@ -1,14 +1,13 @@
 package com.gitrekt.quora.commands.handlers;
 
 import com.gitrekt.quora.commands.Command;
-import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
 import com.gitrekt.quora.exceptions.BadRequestException;
-import com.gitrekt.quora.models.User;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
-import org.apache.commons.validator.routines.EmailValidator;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 /**
  * This command is responsible for signing up the user. It does so by validating the given

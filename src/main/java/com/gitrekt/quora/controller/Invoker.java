@@ -5,6 +5,7 @@ import com.gitrekt.quora.config.Config;
 import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
 import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -24,11 +25,11 @@ public final class Invoker {
           AuthenticationException {
 
     String commandClassPath =
-        CONFIG.getProperty("commandsPackage") + "." + CONFIG.getProperty(commandName);
+        CONFIG.getProperty("commands") + "." + CONFIG.getProperty(commandName);
     Class<?> commandClass = getClass(commandClassPath);
     Constructor<?> commandConstructor = getConstructor(commandClass, HashMap.class);
 
-    String postgresClassPath = CONFIG.getProperty("postgresPackage") + ".UsersPostgresHandler";
+    String postgresClassPath = CONFIG.getProperty("postgres") + ".UsersPostgresHandler";
     Constructor<?> postgresConstructor = getConstructor(getClass(postgresClassPath));
 
     Command command = (Command) commandConstructor.newInstance(arguments);

@@ -5,26 +5,21 @@ import com.gitrekt.quora.exceptions.ServerException;
 import com.gitrekt.quora.pooling.ThreadPool;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.*;
 import com.rabbitmq.client.AMQP.BasicProperties;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
+import logging.ServiceLogger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 /** Represents a consumer that consumes from the micro-service's queue. */
 public class MessageQueueConsumer {
 
-  private static final Logger LOGGER = Logger.getLogger(MessageQueueConsumer.class.getName());
+  private static final ServiceLogger LOGGER = ServiceLogger.getInstance();
 
   /** Channel to the RabbitMQ service. */
   private Channel channel;
@@ -113,7 +108,7 @@ public class MessageQueueConsumer {
                   response.addProperty(
                       "statusCode", String.valueOf(HttpResponseStatus.INTERNAL_SERVER_ERROR));
                   response.addProperty("error", "Internal Server Error");
-                  LOGGER.severe(
+                  LOGGER.log(
                       String.format(
                           "Error executing command %s\n%s", commandName, exception.getMessage()));
                 }
@@ -127,7 +122,7 @@ public class MessageQueueConsumer {
                       response.toString().getBytes(StandardCharsets.UTF_8));
                   channel.close();
                 } catch (IOException | TimeoutException exception) {
-                  LOGGER.severe(
+                  LOGGER.log(
                       String.format(
                           "Error sending the response to main server\n%s", exception.getMessage()));
                 }
