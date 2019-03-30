@@ -1,5 +1,6 @@
 package com.gitrekt.quora.server;
 
+import com.gitrekt.quora.database.postgres.PostgresConnection;
 import com.gitrekt.quora.queue.MessageQueueConsumer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -9,14 +10,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import logging.ServiceLogger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.logging.Logger;
 
 public class NettyHttpServer {
 
-  private static final Logger LOGGER = Logger.getLogger(NettyHttpServer.class.getName());
+  private static final ServiceLogger LOGGER = ServiceLogger.getInstance();
 
   private ServerBootstrap bootstrap;
   private NioEventLoopGroup bossGroup;
@@ -67,9 +68,9 @@ public class NettyHttpServer {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
               if (channelFuture.isSuccess()) {
-                LOGGER.info(String.format("Server Listening on http://%s:%s", host, port));
+                LOGGER.log(String.format("Server Listening on http://%s:%s", host, port));
               } else {
-                LOGGER.severe(
+                LOGGER.log(
                     String.format("Failed to start server %s", channelFuture.cause().toString()));
               }
             }
@@ -86,10 +87,20 @@ public class NettyHttpServer {
 
   /** Start the server. */
   public static void main(String[] args) {
+
+    // Start DB pool
+    PostgresConnection.getInstance();
+
     try {
       new MessageQueueConsumer();
     } catch (IOException exception) {
       exception.printStackTrace();
     }
+
+    /*
+     * Controller Health.
+     */
+    NettyHttpServer server = new NettyHttpServer();
+    server.init();
   }
 }

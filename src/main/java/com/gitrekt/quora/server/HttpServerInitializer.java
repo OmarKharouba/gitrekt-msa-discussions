@@ -1,14 +1,13 @@
 package com.gitrekt.quora.server;
 
+import com.gitrekt.quora.server.middlewares.ExceptionHandler;
 import com.gitrekt.quora.server.middlewares.HandleRequest;
 import com.gitrekt.quora.server.middlewares.JsonDecoder;
 import com.gitrekt.quora.server.middlewares.JsonEncoder;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-
 import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -40,13 +39,12 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
     pipeline.addLast("aggregator", new HttpObjectAggregator(Short.MAX_VALUE));
     pipeline.addLast("compressor", new HttpContentCompressor());
     pipeline.addLast(new JsonDecoder());
-
     pipeline.addLast(new HandleRequest());
+    pipeline.addLast(new ExceptionHandler());
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     super.exceptionCaught(ctx, cause);
-    System.err.println("ERROR");
   }
 }

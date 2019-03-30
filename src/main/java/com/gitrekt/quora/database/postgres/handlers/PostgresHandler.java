@@ -1,8 +1,8 @@
 package com.gitrekt.quora.database.postgres.handlers;
 
 import com.gitrekt.quora.database.postgres.PostgresConnection;
-import java.sql.CallableStatement;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

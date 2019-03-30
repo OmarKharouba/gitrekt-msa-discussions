@@ -3,11 +3,9 @@ package com.gitrekt.quora.queue;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import logging.ServiceLogger;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Represents a Connection to the RabbitMQ service, that is used to connect and create Channels.
@@ -16,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class MessageQueueConnection {
 
-  private static final Logger LOGGER = Logger.getLogger(MessageQueueConnection.class.getName());
+  private static final ServiceLogger LOGGER = ServiceLogger.getInstance();
 
   private static MessageQueueConnection instance = new MessageQueueConnection();
   private static long retryDelay = 3000;
@@ -27,6 +25,11 @@ public class MessageQueueConnection {
   private Connection connection;
 
   private MessageQueueConnection() {
+    connect();
+  }
+
+  /** Connect to the message queue. */
+  public void connect() {
     ConnectionFactory connectionFactory = new ConnectionFactory();
     connectionFactory.setAutomaticRecoveryEnabled(true);
 
@@ -43,11 +46,9 @@ public class MessageQueueConnection {
       } catch (Exception exception) {
         try {
           Thread.sleep(retryDelay);
-          LOGGER.log(
-              Level.ALL,
-              String.format("Problem connecting with RabbitMQ waiting %d ms", retryDelay));
+          LOGGER.log(String.format("Problem connecting with RabbitMQ waiting %d ms", retryDelay));
         } catch (InterruptedException interruptedException) {
-            // TODO:: Do something useful
+          // TODO:: Do something useful
         }
       }
     }
