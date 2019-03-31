@@ -7,7 +7,7 @@ public class NotFoundException extends ServerException {
   private String error;
 
   public NotFoundException() {
-    error = "404 not found.";
+    super("404 not found");
   }
 
   @Override

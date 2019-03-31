@@ -89,6 +89,7 @@ public class NettyHttpServer {
   /** Start the server. */
   public static void main(String[] args) {
     System.out.println("Listening on queue: "+System.getenv("QUEUE_NAME"));
+    System.out.println("DB host"+System.getenv("POSTGRES_HOST"));
         try {
           MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
         } catch (Exception exception) {

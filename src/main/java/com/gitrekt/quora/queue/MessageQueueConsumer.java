@@ -90,7 +90,17 @@ public class MessageQueueConsumer {
                       .getConstructor(HashMap.class)
                       .newInstance(args);
 
-          cmd.execute();
+          JsonObject res = (JsonObject) cmd.execute();
+
+          LOGGER.info(String.format("Command executed (%s).", cmdName.toString()));
+
+          Channel channel = MessageQueueConnection.getInstance().createChannel();
+          AMQP.BasicProperties resProperties =
+                  new AMQP.BasicProperties.Builder().correlationId(properties.getCorrelationId()).build();
+          channel.basicPublish("", properties.getReplyTo(), resProperties, res.toString().getBytes());
+          channel.close();
+
+          LOGGER.info("Response sent");
         } catch (Exception exc) {
           exc.printStackTrace();
         }

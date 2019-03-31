@@ -58,9 +58,8 @@ services:
       context: .
     networks:
       - gitrekt
-    environment:
-      - QUEUE_NAME=questions-v1-queue
-      - RABBIT_HOST=rabbit
+    env_file:
+      - .env
     expose:
       - 3000
     volumes:

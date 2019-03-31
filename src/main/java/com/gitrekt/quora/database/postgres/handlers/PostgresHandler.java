@@ -24,10 +24,14 @@ public abstract class PostgresHandler<T> {
    * @param mapper Class to map rows to.
    */
   public PostgresHandler(String table, Class mapper) {
+    System.out.println("Creating db connection");
     connection = PostgresConnection.getInstance().getConnection();
+    System.out.println("DB conn. established" + connection.toString());
     tableName = table;
     this.mapper = mapper;
+    System.out.println("runner");
     runner = new QueryRunner(PostgresConnection.getInstance().dataSource);
+    System.out.println("Runner finished");
   }
 
   /**
