@@ -3,7 +3,7 @@ package com.gitrekt.quora.commands;
 import java.util.HashMap;
 
 public abstract class Command implements Runnable {
-  private HashMap<String, String> args;
+  protected HashMap<String, String> args;
 
   public Command(HashMap<String, String> args) {
     this.args = args;

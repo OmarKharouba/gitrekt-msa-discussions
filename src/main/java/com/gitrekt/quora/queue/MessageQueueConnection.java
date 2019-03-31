@@ -25,9 +25,9 @@ public class MessageQueueConnection {
   private MessageQueueConnection() throws IOException, TimeoutException {
     ConnectionFactory connectionFactory = new ConnectionFactory();
     connectionFactory.setHost(System.getenv("RABBIT_HOST"));
-    connectionFactory.setPort(Integer.parseInt(System.getenv("RABBIT_PORT")));
-    connectionFactory.setUsername(System.getenv("RABBIT_USERNAME"));
-    connectionFactory.setPassword(System.getenv("RABBIT_PASSWORD"));
+//    connectionFactory.setPort(Integer.parseInt(System.getenv("RABBIT_PORT")));
+//    connectionFactory.setUsername(System.getenv("RABBIT_USERNAME"));
+//    connectionFactory.setPassword(System.getenv("RABBIT_PASSWORD"));
 
     connection = connectionFactory.newConnection();
   }

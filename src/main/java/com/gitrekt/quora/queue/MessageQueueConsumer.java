@@ -1,13 +1,14 @@
 package com.gitrekt.quora.queue;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
+import com.gitrekt.quora.commands.Command;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.rabbitmq.client.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -62,7 +63,37 @@ public class MessageQueueConsumer {
           String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
 
         String message = new String(body, StandardCharsets.UTF_8);
+
         LOGGER.info(String.format("Consuming the received message (%s).", message));
+        LOGGER.info(
+            String.format("You should put response in this queue: (%s).", properties.getReplyTo()));
+
+        Gson gson = new Gson();
+        try {
+          JsonObject req = gson.fromJson(message, JsonObject.class);
+
+          StringBuilder cmdName = new StringBuilder(req.get("command").getAsString());
+          cmdName.setCharAt(0, Character.toUpperCase(cmdName.charAt(0)));
+
+          HashMap<String, String> args = new HashMap<>();
+
+          for (String key : req.getAsJsonObject("body").keySet())
+            args.put(key, req.getAsJsonObject("body").get(key).getAsString());
+
+          LOGGER.info(String.format("Decoded arguments (%s).", args.toString()));
+
+          LOGGER.info(String.format("Attempt to create command (%s).", cmdName.toString()));
+
+          Command cmd =
+              (Command)
+                  Class.forName("com.gitrekt.quora.commands.handlers." + cmdName.toString())
+                      .getConstructor(HashMap.class)
+                      .newInstance(args);
+
+          cmd.execute();
+        } catch (Exception exc) {
+          exc.printStackTrace();
+        }
       }
     };
   }

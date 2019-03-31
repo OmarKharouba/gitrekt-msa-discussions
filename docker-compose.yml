@@ -44,6 +44,8 @@ services:
       - POSTGRES_DB=gitrekt_quora
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    networks:
+      - gitrekt
     volumes:
       - ./postgres-data/:/var/lib/postgresql/data
     ports:
@@ -54,10 +56,18 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: .
+    networks:
+      - gitrekt
+    environment:
+      - QUEUE_NAME=questions-v1-queue
+      - RABBIT_HOST=rabbit
     expose:
       - 3000
     volumes:
       - ./:/usr/src/app
     command: "sh -c \"./watch.sh\""
-    env_file:
-      - .env
+
+networks:
+  gitrekt:
+    external:
+      name: starterserver_gitrekt
