@@ -10,10 +10,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class InsertTopicQuestionV1 extends Command {
+public class AddQuestionTopic extends Command {
   static String[] argsNames = {"topic_id","question_id"};
 
-  public InsertTopicQuestionV1(HashMap<String, Object> args) {
+  public AddQuestionTopic(HashMap<String, Object> args) {
     super(args);
   }
 

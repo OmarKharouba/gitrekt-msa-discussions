@@ -4,21 +4,26 @@ import com.gitrekt.quora.commands.Command;
 import com.gitrekt.quora.database.postgres.handlers.QuestionsPostgresHandler;
 import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
+
 import com.google.gson.JsonObject;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PostQuestionsV1 extends Command {
+/**
+ * This command adds a new question with the given arguments.
+ */
+
+public class PostQuestion extends Command {
   static String[] argsNames = {"user_id","title"};
 
-  public PostQuestionsV1(HashMap<String, Object> args) {
+  public PostQuestion(HashMap<String, Object> args) {
     super(args);
   }
 
   @Override
-  public Object execute() throws SQLException, BadRequestException, AuthenticationException{
+  public Object execute() throws SQLException, BadRequestException, AuthenticationException {
 
     checkArguments(argsNames);
 
@@ -32,6 +37,7 @@ public class PostQuestionsV1 extends Command {
     UUID questionId = UUID.randomUUID();
 
     questionHandler.postQuestion(questionId, UUID.fromString(userId), title, body);
+
 
     JsonObject res = new JsonObject();
     res.addProperty("status_code","200");

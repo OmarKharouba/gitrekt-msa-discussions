@@ -1,6 +1,5 @@
 package com.gitrekt.quora.queue;
 
-
 import com.gitrekt.quora.controller.Invoker;
 import com.gitrekt.quora.exceptions.ServerException;
 import com.gitrekt.quora.logging.ServiceLogger;
@@ -86,7 +85,7 @@ public class MessageQueueConsumer {
                 for (String key : requestBody.keySet()) {
                   arguments.put(key, requestBody.get(key).getAsString());
                 }
-
+                
                 String replyTo = properties.getReplyTo();
                 BasicProperties replyProperties =
                     new BasicProperties.Builder()
