@@ -1,6 +1,7 @@
 package com.gitrekt.quora.server;
 
 import com.gitrekt.quora.database.postgres.PostgresConnection;
+import com.gitrekt.quora.logging.ServiceLogger;
 import com.gitrekt.quora.queue.MessageQueueConsumer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -10,7 +11,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import logging.ServiceLogger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

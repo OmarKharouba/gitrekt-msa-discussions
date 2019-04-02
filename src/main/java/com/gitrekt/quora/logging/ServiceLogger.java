@@ -1,4 +1,4 @@
-package logging;
+package com.gitrekt.quora.logging;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

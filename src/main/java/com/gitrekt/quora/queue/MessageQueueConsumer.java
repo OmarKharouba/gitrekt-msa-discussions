@@ -3,13 +3,13 @@ package com.gitrekt.quora.queue;
 
 import com.gitrekt.quora.controller.Invoker;
 import com.gitrekt.quora.exceptions.ServerException;
+import com.gitrekt.quora.logging.ServiceLogger;
 import com.gitrekt.quora.pooling.ThreadPool;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.rabbitmq.client.*;
 import com.rabbitmq.client.AMQP.BasicProperties;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import logging.ServiceLogger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

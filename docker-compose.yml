@@ -11,10 +11,10 @@ services:
       - ./:/usr/src/app
     command: "sh -c \"./watch.sh\""
     networks:
-      - dev-conf_gitrekt-network
+      - devconf_gitrekt-network
     env_file:
       - .env
 
 networks:
-  dev-conf_gitrekt-network:
+  devconf_gitrekt-network:
     external: true

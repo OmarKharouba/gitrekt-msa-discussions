@@ -1,9 +1,9 @@
 package com.gitrekt.quora.queue;
 
+import com.gitrekt.quora.logging.ServiceLogger;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import logging.ServiceLogger;
 
 import java.io.IOException;
 

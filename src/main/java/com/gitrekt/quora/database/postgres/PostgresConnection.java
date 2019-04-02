@@ -1,7 +1,7 @@
 package com.gitrekt.quora.database.postgres;
 
+import com.gitrekt.quora.logging.ServiceLogger;
 import com.zaxxer.hikari.HikariDataSource;
-import logging.ServiceLogger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
