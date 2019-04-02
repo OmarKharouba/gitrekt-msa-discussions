@@ -1,21 +1,27 @@
 package com.gitrekt.quora.queue;
 
-import com.gitrekt.quora.commands.Command;
-import com.google.gson.Gson;
+
+import com.gitrekt.quora.controller.Invoker;
+import com.gitrekt.quora.exceptions.ServerException;
+import com.gitrekt.quora.pooling.ThreadPool;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.rabbitmq.client.*;
+import com.rabbitmq.client.AMQP.BasicProperties;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import logging.ServiceLogger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.sql.SQLException;
+
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 /** Represents a consumer that consumes from the micro-service's queue. */
 public class MessageQueueConsumer {
 
-  private static final Logger LOGGER = Logger.getLogger(MessageQueueConsumer.class.getName());
+  private static final ServiceLogger LOGGER = ServiceLogger.getInstance();
 
   /** Channel to the RabbitMQ service. */
   private Channel channel;
@@ -39,7 +45,7 @@ public class MessageQueueConsumer {
     /*
      * Declare a queue that is persistent/durable.
      */
-    channel.queueDeclare(queueName, true, false, false, null);
+    channel.queueDeclare(queueName, false, false, false, null);
 
     /*
      * Consume messages from the queue, acknowledge when
@@ -60,50 +66,71 @@ public class MessageQueueConsumer {
     return new DefaultConsumer(channel) {
       @Override
       public void handleDelivery(
-          String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
+          String consumerTag,
+          Envelope envelope,
+          final AMQP.BasicProperties properties,
+          final byte[] body) {
 
-        String message = new String(body, StandardCharsets.UTF_8);
+        Runnable runnable =
+            new Runnable() {
+              @Override
+              public void run() {
+                JsonObject request =
+                    new JsonParser()
+                        .parse(new String(body, StandardCharsets.UTF_8))
+                        .getAsJsonObject();
 
-        LOGGER.info(String.format("Consuming the received message (%s).", message));
-        LOGGER.info(
-            String.format("You should put response in this queue: (%s).", properties.getReplyTo()));
+                String commandName = request.get("command").getAsString();
+                HashMap<String, Object> arguments = new HashMap<>();
+                JsonObject requestBody = request.getAsJsonObject("body");
+                for (String key : requestBody.keySet()) {
+                  arguments.put(key, requestBody.get(key).getAsString());
+                }
 
-        Gson gson = new Gson();
-        try {
-          JsonObject req = gson.fromJson(message, JsonObject.class);
+                String replyTo = properties.getReplyTo();
+                BasicProperties replyProperties =
+                    new BasicProperties.Builder()
+                        .correlationId(properties.getCorrelationId())
+                        .build();
 
-          StringBuilder cmdName = new StringBuilder(req.get("command").getAsString());
-          cmdName.setCharAt(0, Character.toUpperCase(cmdName.charAt(0)));
+                JsonObject response = new JsonObject();
 
-          HashMap<String, String> args = new HashMap<>();
+                try {
+                  Object result = Invoker.invoke(commandName, arguments);
+                  response.addProperty("statusCode", "200");
+                  response.addProperty("response", result.toString());
+                } catch (ServerException exception) {
+                  response.addProperty("statusCode", String.valueOf(exception.getCode().code()));
+                  response.addProperty("error", exception.getMessage());
+                } catch (SQLException exception) {
+                  response.addProperty(
+                      "statusCode", String.valueOf(HttpResponseStatus.BAD_REQUEST));
+                  response.addProperty("error", exception.getMessage());
+                } catch (Exception exception) {
+                  response.addProperty(
+                      "statusCode", String.valueOf(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+                  response.addProperty("error", "Internal Server Error");
+                  LOGGER.log(
+                      String.format(
+                          "Error executing command %s\n%s", commandName, exception.getMessage()));
+                }
 
-          for (String key : req.getAsJsonObject("body").keySet())
-            args.put(key, req.getAsJsonObject("body").get(key).getAsString());
-
-          LOGGER.info(String.format("Decoded arguments (%s).", args.toString()));
-
-          LOGGER.info(String.format("Attempt to create command (%s).", cmdName.toString()));
-
-          Command cmd =
-              (Command)
-                  Class.forName("com.gitrekt.quora.commands.handlers." + cmdName.toString())
-                      .getConstructor(HashMap.class)
-                      .newInstance(args);
-
-          JsonObject res = (JsonObject) cmd.execute();
-
-          LOGGER.info(String.format("Command executed (%s).", cmdName.toString()));
-
-          Channel channel = MessageQueueConnection.getInstance().createChannel();
-          AMQP.BasicProperties resProperties =
-                  new AMQP.BasicProperties.Builder().correlationId(properties.getCorrelationId()).build();
-          channel.basicPublish("", properties.getReplyTo(), resProperties, res.toString().getBytes());
-          channel.close();
-
-          LOGGER.info("Response sent");
-        } catch (Exception exc) {
-          exc.printStackTrace();
-        }
+                try {
+                  Channel channel = MessageQueueConnection.getInstance().createChannel();
+                  channel.basicPublish(
+                      "",
+                      replyTo,
+                      replyProperties,
+                      response.toString().getBytes(StandardCharsets.UTF_8));
+                  channel.close();
+                } catch (IOException | TimeoutException exception) {
+                  LOGGER.log(
+                      String.format(
+                          "Error sending the response to main server\n%s", exception.getMessage()));
+                }
+              }
+            };
+        ThreadPool.getInstance().run(runnable);
       }
     };
   }

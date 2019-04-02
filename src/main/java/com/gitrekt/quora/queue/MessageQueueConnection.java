@@ -3,10 +3,9 @@ package com.gitrekt.quora.queue;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import logging.ServiceLogger;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
 
 /**
  * Represents a Connection to the RabbitMQ service, that is used to connect and create Channels.
@@ -15,39 +14,53 @@ import java.util.logging.Logger;
  */
 public class MessageQueueConnection {
 
-  private static final Logger LOGGER = Logger.getLogger(MessageQueueConnection.class.getName());
+  private static final ServiceLogger LOGGER = ServiceLogger.getInstance();
+
+  private static MessageQueueConnection instance = new MessageQueueConnection();
+  private static long retryDelay = 3000;
 
   /*
    * Connection to the RabbitMQ service.
    */
   private Connection connection;
 
-  private MessageQueueConnection() throws IOException, TimeoutException {
+  private MessageQueueConnection() {
+    connect();
+  }
+
+  /** Connect to the message queue. */
+  public void connect() {
     ConnectionFactory connectionFactory = new ConnectionFactory();
+    connectionFactory.setAutomaticRecoveryEnabled(true);
+
     connectionFactory.setHost(System.getenv("RABBIT_HOST"));
 //    connectionFactory.setPort(Integer.parseInt(System.getenv("RABBIT_PORT")));
 //    connectionFactory.setUsername(System.getenv("RABBIT_USERNAME"));
 //    connectionFactory.setPassword(System.getenv("RABBIT_PASSWORD"));
 
-    connection = connectionFactory.newConnection();
-  }
-
-  private static class MessageQueueConnectionHelper {
-
-    private static MessageQueueConnection INSTANCE;
-
-    static {
+    boolean isConnected = false;
+    while (!isConnected) {
       try {
-        INSTANCE = new MessageQueueConnection();
+        connection = connectionFactory.newConnection();
+        isConnected = true;
       } catch (Exception exception) {
-        LOGGER.severe("Error creating a connection to RabbitMQ service");
-        exception.printStackTrace();
+        try {
+          Thread.sleep(retryDelay);
+          LOGGER.log(String.format("Problem connecting with RabbitMQ waiting %d ms", retryDelay));
+        } catch (InterruptedException interruptedException) {
+          // TODO:: Do something useful
+        }
       }
     }
   }
 
+  /**
+   * Returns the Singleton Instance.
+   *
+   * @return The Message Queue Connection Instance
+   */
   public static MessageQueueConnection getInstance() {
-    return MessageQueueConnectionHelper.INSTANCE;
+    return instance;
   }
 
   /**

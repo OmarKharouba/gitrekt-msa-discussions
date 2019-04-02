@@ -1,46 +1,28 @@
 package com.gitrekt.quora.commands;
 
+import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
+import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
-import com.google.gson.JsonObject;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
-public abstract class Command implements Runnable {
-  protected static final JsonObject BAD_REQUEST, INTERNAL_SERVER_ERROR, OK;
-  static {
-    BAD_REQUEST = new JsonObject();
+public abstract class Command {
 
-    BAD_REQUEST.addProperty("status_code","402");
-    BAD_REQUEST.addProperty("message","bad request");
+  protected HashMap<String, Object> args;
 
-    INTERNAL_SERVER_ERROR = new JsonObject();
+  protected UsersPostgresHandler postgresHandler;
 
-    INTERNAL_SERVER_ERROR.addProperty("status_code","500");
-    INTERNAL_SERVER_ERROR.addProperty("message","internal server error");
-
-    OK = new JsonObject();
-
-    OK.addProperty("status_code","200");
-    OK.addProperty("message","request successful");
-  }
-  protected HashMap<String, String> args;
-
-  public Command(HashMap<String, String> args) {
+  public Command(HashMap<String, Object> args) {
     this.args = args;
   }
 
-  public void setArgs(HashMap<String, String> args) {
-    this.args = args;
+
+  public void setPostgresHandler(UsersPostgresHandler postgresHandler) {
+    this.postgresHandler = postgresHandler;
   }
 
-  public abstract Object execute();
-
-  @Override
-  public void run() {
-    execute();
-  }
-
-  protected boolean checkArguments(String[] requiredArgs){
+  protected void checkArguments(String[] requiredArgs) throws BadRequestException {
     StringBuilder stringBuilder = new StringBuilder();
     for (String argument : requiredArgs) {
       if (!args.containsKey(argument) || args.get(argument) == null) {
@@ -48,9 +30,10 @@ public abstract class Command implements Runnable {
       }
     }
     if (stringBuilder.length() > 0) {
-      return false;
+      throw new BadRequestException(stringBuilder.toString());
     }
-
-    return true;
   }
+
+  public abstract Object execute()
+      throws SQLException, BadRequestException, AuthenticationException;
 }
