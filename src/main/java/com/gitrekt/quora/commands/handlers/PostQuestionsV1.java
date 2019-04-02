@@ -19,19 +19,10 @@ public class PostQuestionsV1 extends Command {
 
   @Override
   public Object execute() {
-    System.out.println("In command");
 
-    JsonObject res = new JsonObject();
-    try {
-      checkArguments(argsNames);
-    } catch (BadRequestException e) {
-      res.addProperty("status_code","402");
-      res.addProperty("message","bad request");
-
-      return res;
+    if(!checkArguments(argsNames)) {
+      return BAD_REQUEST;
     }
-
-    System.out.println("Arguments checked");
 
     QuestionsPostgresHandler questionHandler;
     try{
@@ -42,8 +33,6 @@ public class PostQuestionsV1 extends Command {
       questionHandler = null;
     }
 
-    System.out.println("Get arguments");
-
 
     String userId = args.get("user_id");
     String title = args.get("title");
@@ -52,12 +41,10 @@ public class PostQuestionsV1 extends Command {
     try {
       UUID questionId = UUID.randomUUID();
 
-      System.out.println("Insert in db");
-
       questionHandler.postQuestion(questionId, UUID.fromString(userId), title, body);
 
-      System.out.println("DB complete");
 
+      JsonObject res = new JsonObject();
       res.addProperty("status_code","200");
       JsonObject resBody = new JsonObject();
       resBody.addProperty("question_id",questionId.toString());
@@ -68,18 +55,16 @@ public class PostQuestionsV1 extends Command {
       resBody.addProperty("subscribers",0);
 
       res.add("body", resBody);
+
+      return res;
     } catch (SQLException sqlException) {
       sqlException.printStackTrace();
 
-      res.addProperty("status_code","402");
-      res.addProperty("message","bad request");
-    } catch (Exception exc){
+      return BAD_REQUEST;
+    } catch (Exception exc) {
       exc.printStackTrace();
 
-      res.addProperty("status_code","500");
-      res.addProperty("message","internal server error");
-    } finally {
-      return res;
+      return INTERNAL_SERVER_ERROR;
     }
   }
 }

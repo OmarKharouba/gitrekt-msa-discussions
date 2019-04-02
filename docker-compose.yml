@@ -51,7 +51,7 @@ services:
     ports:
       - 5432:5432
 
-  server:
+  questions:
     restart: always
     build:
       dockerfile: ./Dockerfile
