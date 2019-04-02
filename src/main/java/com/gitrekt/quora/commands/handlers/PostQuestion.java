@@ -14,7 +14,6 @@ import java.util.UUID;
 /**
  * This command adds a new question with the given arguments.
  */
-
 public class PostQuestion extends Command {
   static String[] argsNames = {"user_id","title"};
 

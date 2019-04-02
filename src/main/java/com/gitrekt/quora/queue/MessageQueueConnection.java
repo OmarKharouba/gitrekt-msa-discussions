@@ -34,9 +34,9 @@ public class MessageQueueConnection {
     connectionFactory.setAutomaticRecoveryEnabled(true);
 
     connectionFactory.setHost(System.getenv("RABBIT_HOST"));
-//    connectionFactory.setPort(Integer.parseInt(System.getenv("RABBIT_PORT")));
-//    connectionFactory.setUsername(System.getenv("RABBIT_USERNAME"));
-//    connectionFactory.setPassword(System.getenv("RABBIT_PASSWORD"));
+    connectionFactory.setPort(Integer.parseInt(System.getenv("RABBIT_PORT")));
+    connectionFactory.setUsername(System.getenv("RABBIT_USERNAME"));
+    connectionFactory.setPassword(System.getenv("RABBIT_PASSWORD"));
 
     boolean isConnected = false;
     while (!isConnected) {

@@ -18,7 +18,7 @@ public class AddQuestionTopic extends Command {
   }
 
   @Override
-  public Object execute() throws SQLException, BadRequestException, AuthenticationException{
+  public Object execute() throws SQLException, BadRequestException, AuthenticationException {
     checkArguments(argsNames);
 
     String topicId = (String) args.get("topic_id");

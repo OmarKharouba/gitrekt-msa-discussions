@@ -6,8 +6,13 @@ import com.gitrekt.quora.logging.ServiceLogger;
 import com.gitrekt.quora.pooling.ThreadPool;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.rabbitmq.client.*;
+
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.io.IOException;

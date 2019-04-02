@@ -29,12 +29,12 @@ public final class Invoker {
     Class<?> commandClass = getClass(commandClassPath);
     Constructor<?> commandConstructor = getConstructor(commandClass, HashMap.class);
 
-//    String postgresClassPath = CONFIG.getProperty("postgres") + ".UsersPostgresHandler";
-//    Constructor<?> postgresConstructor = getConstructor(getClass(postgresClassPath));
+    //  String postgresClassPath = CONFIG.getProperty("postgres") + ".UsersPostgresHandler";
+    //  Constructor<?> postgresConstructor = getConstructor(getClass(postgresClassPath));
 
     Command command = (Command) commandConstructor.newInstance(arguments);
 
-//    command.setPostgresHandler((UsersPostgresHandler) postgresConstructor.newInstance());
+    //  command.setPostgresHandler((UsersPostgresHandler) postgresConstructor.newInstance());
 
     return command.execute();
   }
