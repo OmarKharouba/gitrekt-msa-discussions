@@ -96,9 +96,9 @@ public class MessageQueueConsumer {
                 JsonObject response = new JsonObject();
 
                 try {
-                  Object result = Invoker.invoke(commandName, arguments);
+                  JsonObject result = (JsonObject) Invoker.invoke(commandName, arguments);
                   response.addProperty("statusCode", "200");
-                  response.addProperty("response", result.toString());
+                  response.addProperty("response", result.getAsString());
                 } catch (ServerException exception) {
                   response.addProperty("statusCode", String.valueOf(exception.getCode().code()));
                   response.addProperty("error", exception.getMessage());
