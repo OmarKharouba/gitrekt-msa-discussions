@@ -6,6 +6,7 @@ import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
 
 import com.google.gson.JsonObject;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -33,13 +34,13 @@ public class PostQuestion extends Command {
     String userId = (String) args.get("user_id");
     String title = (String) args.get("title");
     String body = (String) args.get("body");
-    UUID questionId = UUID.randomUUID();
+    UUID questionId = args.containsKey("question_id")?UUID.fromString((String) args.get("question_id")):UUID.randomUUID();
 
     questionHandler.postQuestion(questionId, UUID.fromString(userId), title, body);
 
 
     JsonObject res = new JsonObject();
-    res.addProperty("status_code","200");
+    res.addProperty("status_code", 200);
     JsonObject resBody = new JsonObject();
     resBody.addProperty("question_id",questionId.toString());
     resBody.addProperty("user_id",userId);

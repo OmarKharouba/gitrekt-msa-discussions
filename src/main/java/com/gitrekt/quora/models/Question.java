@@ -4,7 +4,10 @@ import java.sql.Timestamp;
 
 public class Question {
   private String id;
+
   private String userId;
+
+  private String pollId;
   private String title;
   private String body;
   private int upvotes;
@@ -12,7 +15,6 @@ public class Question {
   private Timestamp createdAt;
   private Timestamp updatedAt;
   private Timestamp deletedAt;
-
   public String getId() {
     return id;
   }
@@ -83,5 +85,18 @@ public class Question {
 
   public void setDeletedAt(Timestamp deletedAt) {
     this.deletedAt = deletedAt;
+  }
+
+  public String getPollId() { return pollId; }
+
+  public void setPollId(String pollId) { this.pollId = pollId; }
+
+  public String toString(){
+    return "Question{" + "question_Id='" + id + '\''
+            + ", user_id='" + userId + '\''
+            + ", title='" + title + '\''
+            + ", body='" + body + '\''
+            + ", created_at='" + createdAt.toString() + '\''
+            + ", updated_at='" + updatedAt.toString() + '}';
   }
 }

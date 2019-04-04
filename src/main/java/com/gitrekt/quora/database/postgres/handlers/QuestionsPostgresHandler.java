@@ -1,8 +1,10 @@
 package com.gitrekt.quora.database.postgres.handlers;
 
 import com.gitrekt.quora.models.Question;
+import org.postgresql.util.PGobject;
 
 import java.sql.CallableStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -26,6 +28,29 @@ public class QuestionsPostgresHandler extends PostgresHandler<Question> {
 
 
     callableStatement.execute();
+  }
+
+  public Question getQuestion(String questionId) throws SQLException {
+    String sql = "SELECT * FROM questions WHERE id=?";
+
+    ResultSet query = call(sql,new int[]{Types.OTHER},questionId);
+
+    Question question = new Question();
+
+    for(int i = 1;i<=query.getMetaData().getColumnCount();i++)
+      System.out.println(query.getMetaData().getColumnLabel(i));
+    while(query.next())
+    {
+      question.setId(query.getString("id"));
+      question.setUserId(query.getString("user_id"));
+      question.setPollId(query.getString("poll_id"));
+      question.setTitle(query.getString("title"));
+      question.setBody(query.getString("body"));
+      question.setCreatedAt(query.getTimestamp("created_at"));
+      question.setUpdatedAt(query.getTimestamp("updated_at"));
+    }
+
+    return question;
   }
 
 }

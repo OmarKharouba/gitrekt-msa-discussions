@@ -13,34 +13,30 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class AddQuestionTopic extends Command {
-  static String[] argsNames = {"topic_id","question_id"};
+public class DeleteQuestion extends Command {
 
-  public AddQuestionTopic(HashMap<String, Object> args) {
+  public DeleteQuestion(HashMap<String, Object> args) {
     super(args);
   }
 
   @Override
   public Object execute() throws SQLException, BadRequestException, AuthenticationException {
-    checkArguments(argsNames);
+    checkArguments(new String[]{"question_id"});
 
     Connection connection = PostgresConnection.getInstance().getConnection();
 
-    String topicId = (String) args.get("topic_id");
     String questionId = (String) args.get("question_id");
 
-    String sql = "CALL Insert_Question_Topic(?, ?)";
+    String sql = "CALL Delete_Question(?)";
     CallableStatement callableStatement = connection.prepareCall(sql);
 
-    callableStatement.setObject(1, UUID.fromString(topicId), Types.OTHER);
-    callableStatement.setObject(2,UUID.fromString(questionId),Types.OTHER);
-
+    callableStatement.setObject(1,UUID.fromString(questionId),Types.OTHER);
 
     callableStatement.execute();
 
     JsonObject res = new JsonObject();
     res.addProperty("status_code",200);
-    res.addProperty("message","Topic added successfully");
+    res.addProperty("message","Question deleted successfully");
 
     return res;
   }

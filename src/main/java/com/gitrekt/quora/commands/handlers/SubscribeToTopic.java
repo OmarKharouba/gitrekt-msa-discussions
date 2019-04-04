@@ -13,10 +13,10 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class AddQuestionTopic extends Command {
-  static String[] argsNames = {"topic_id","question_id"};
+public class SubscribeToTopic extends Command {
+  static String[] argsNames = {"topic_id", "user_id"};
 
-  public AddQuestionTopic(HashMap<String, Object> args) {
+  public SubscribeToTopic(HashMap<String, Object> args) {
     super(args);
   }
 
@@ -27,20 +27,21 @@ public class AddQuestionTopic extends Command {
     Connection connection = PostgresConnection.getInstance().getConnection();
 
     String topicId = (String) args.get("topic_id");
-    String questionId = (String) args.get("question_id");
+    String userId = (String) args.get("user_id");
 
-    String sql = "CALL Insert_Question_Topic(?, ?)";
+    String sql = "CALL Insert_User_Subscribe_Topic(?, ?)";
+
     CallableStatement callableStatement = connection.prepareCall(sql);
 
-    callableStatement.setObject(1, UUID.fromString(topicId), Types.OTHER);
-    callableStatement.setObject(2,UUID.fromString(questionId),Types.OTHER);
+    callableStatement.setObject(1, UUID.fromString(userId), Types.OTHER);
+    callableStatement.setObject(2,UUID.fromString(topicId),Types.OTHER);
 
 
     callableStatement.execute();
 
     JsonObject res = new JsonObject();
     res.addProperty("status_code",200);
-    res.addProperty("message","Topic added successfully");
+    res.addProperty("message","Subscribed to topic successfully");
 
     return res;
   }
