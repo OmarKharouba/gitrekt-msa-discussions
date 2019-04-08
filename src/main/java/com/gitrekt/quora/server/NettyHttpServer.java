@@ -1,8 +1,8 @@
 package com.gitrekt.quora.server;
 
-import com.gitrekt.quora.commands.handlers.EchoCommand;
-import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
-import com.gitrekt.quora.pooling.ThreadPool;
+import com.gitrekt.quora.database.postgres.PostgresConnection;
+import com.gitrekt.quora.logging.ServiceLogger;
+import com.gitrekt.quora.queue.MessageQueueConsumer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -12,12 +12,12 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.logging.Logger;
 
 public class NettyHttpServer {
 
-  private static final Logger LOGGER = Logger.getLogger(NettyHttpServer.class.getName());
+  private static final ServiceLogger LOGGER = ServiceLogger.getInstance();
 
   private ServerBootstrap bootstrap;
   private NioEventLoopGroup bossGroup;
@@ -68,9 +68,9 @@ public class NettyHttpServer {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
               if (channelFuture.isSuccess()) {
-                LOGGER.info(String.format("Server Listening on http://%s:%s", host, port));
+                LOGGER.log(String.format("Server Listening on http://%s:%s", host, port));
               } else {
-                LOGGER.severe(
+                LOGGER.log(
                     String.format("Failed to start server %s", channelFuture.cause().toString()));
               }
             }
@@ -87,21 +87,32 @@ public class NettyHttpServer {
 
   /** Start the server. */
   public static void main(String[] args) {
-    //    try {
-    //      MessageQueueConsumer messageQueueConsumer = new MessageQueueConsumer();
-    //    } catch (Exception exception) {
-    //      LOGGER.severe(
-    //          String.format("Failed to start Message Queue Consumer %s", exception.getMessage()));
-    //    }
 
-    //    UsersPostgresHandler pg = new UsersPostgresHandler();
-    //    System.out.println(pg.getUsers());
+    // Start DB pool
+    PostgresConnection.getInstance();
 
-    // command implements runnable
-    // use thread pool to run the command.
-    //    EchoCommand command = new EchoCommand(null);
-    //    ThreadPool.getInstance().run(command);
+    try {
+      new MessageQueueConsumer();
+    } catch (IOException exception) {
+      exception.printStackTrace();
+    }
 
+//    HashMap<String, Object> map = new HashMap<>();
+//    map.put("question_id", "5f7d5b2c-ea5a-4c52-bb11-af70e16f3649");
+//    Command cmd = new GetQuestion(map);
+//    try {
+//      System.out.println(((JsonObject)cmd.execute()).toString());
+//    } catch (SQLException e) {
+//      e.printStackTrace();
+//    } catch (BadRequestException e) {
+//      e.printStackTrace();
+//    } catch (AuthenticationException e) {
+//      e.printStackTrace();
+//    }
+
+    /*
+     * Controller Health.
+     */
     NettyHttpServer server = new NettyHttpServer();
     server.init();
   }

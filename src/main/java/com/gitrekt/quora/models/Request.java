@@ -9,6 +9,8 @@ import java.util.Map;
 /** Model for HttpRequest. */
 public class Request {
 
+  private static final Gson gson = new Gson();
+
   private String httpMethod;
   private Map<String, List<String>> queryParams;
   private JsonObject body;
@@ -91,9 +93,37 @@ public class Request {
     this.userId = userId;
   }
 
+  public String toJsonString() {
+    return gson.toJson(this, Request.class);
+  }
+
   @Override
   public String toString() {
-    Gson gson = new Gson();
-    return gson.toJson(this, Request.class);
+    return "Request{"
+        + "httpMethod='"
+        + httpMethod
+        + '\''
+        + ", queryParams="
+        + queryParams
+        + ", body="
+        + body
+        + ", isAuthenticated="
+        + isAuthenticated
+        + ", userId='"
+        + userId
+        + '\''
+        + ", path='"
+        + path
+        + '\''
+        + ", jwt='"
+        + jwt
+        + '\''
+        + ", queue='"
+        + queue
+        + '\''
+        + ", command='"
+        + command
+        + '\''
+        + '}';
   }
 }

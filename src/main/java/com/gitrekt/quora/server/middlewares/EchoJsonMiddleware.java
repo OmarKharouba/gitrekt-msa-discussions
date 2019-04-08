@@ -1,6 +1,5 @@
 package com.gitrekt.quora.server.middlewares;
 
-import com.gitrekt.quora.database.postgres.handlers.DiscussionsPostgresHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;

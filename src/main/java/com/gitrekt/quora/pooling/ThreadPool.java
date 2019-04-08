@@ -4,10 +4,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class ThreadPool {
+
   private ThreadPoolExecutor executor;
   private int numOfThreads;
 
-  public ThreadPool() {
+  private ThreadPool() {
     numOfThreads = Integer.parseInt(System.getenv("THREAD_POOL_COUNT"));
     executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numOfThreads);
   }

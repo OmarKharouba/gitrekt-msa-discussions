@@ -1,0 +1,45 @@
+package com.gitrekt.quora.commands.handlers;
+
+import com.gitrekt.quora.commands.Command;
+import com.gitrekt.quora.database.postgres.handlers.DiscussionsPostgresHandler;
+import com.gitrekt.quora.exceptions.AuthenticationException;
+import com.gitrekt.quora.exceptions.BadRequestException;
+import com.gitrekt.quora.models.Discussion;
+import com.google.gson.JsonObject;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+
+public class GetDiscussion extends Command {
+  public GetDiscussion(HashMap<String, Object> args) {
+    super(args);
+  }
+
+  @Override
+  public Object execute() throws SQLException, BadRequestException, AuthenticationException {
+    checkArguments(new String[] {"discussion_id"});
+
+    String discussionId = (String) args.get("discussion_id");
+
+    DiscussionsPostgresHandler handler = new DiscussionsPostgresHandler();
+
+    Discussion discussion = handler.getDiscussion(discussionId);
+
+    JsonObject res = new JsonObject();
+    res.addProperty("status_code", 200);
+
+    JsonObject resBody = new JsonObject();
+    resBody.addProperty("discussion_id", discussionId);
+    resBody.addProperty("title", discussion.getTitle());
+    resBody.addProperty("body", discussion.getBody());
+    resBody.addProperty("subscribers_count", discussion.getSubscribersCount());
+    resBody.addProperty("is_public", discussion.isPublic());
+    resBody.addProperty("poll_id", discussion.getPollId());
+    resBody.addProperty("topic_id", discussion.getTopicId());
+    resBody.addProperty("user_id", discussion.getUserId());
+
+    res.add("body", resBody);
+
+    return res;
+  }
+}

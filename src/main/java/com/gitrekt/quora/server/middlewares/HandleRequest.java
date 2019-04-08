@@ -1,42 +1,46 @@
 package com.gitrekt.quora.server.middlewares;
 
+import com.gitrekt.quora.config.Config;
+import com.gitrekt.quora.controller.HealthController;
+import com.gitrekt.quora.exceptions.BadRequestException;
 import com.gitrekt.quora.models.Request;
-import com.gitrekt.quora.queue.MessageQueueConnection;
-import com.gitrekt.quora.queue.MessageQueueConsumer;
 import com.google.gson.JsonObject;
-import com.rabbitmq.client.AMQP.BasicProperties;
-import com.rabbitmq.client.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class HandleRequest extends SimpleChannelInboundHandler<Request> {
 
-  private static final String DEFAULT_EXCHANGE = "";
-  private static final String QUEUE_NAME = System.getenv("QUEUE_NAME");
-
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Request msg)
-      throws IOException, TimeoutException {
+      throws BadRequestException, NoSuchMethodException, InvocationTargetException,
+          IllegalAccessException {
 
-    String correlationId = UUID.randomUUID().toString();
-    MessageQueueConsumer.getInstance()
-        .addListener(
-            correlationId,
-            new Consumer<JsonObject>() {
-              @Override
-              public void accept(JsonObject jsonObject) {
-                ctx.writeAndFlush(jsonObject);
-              }
-            });
+    JsonObject body = msg.getBody();
+    String requestFuncName =
+        body.get("function_name").isJsonNull() ? "" : body.get("function_name").getAsString();
 
-    Channel channel = MessageQueueConnection.getInstance().createChannel();
-    BasicProperties properties =
-        new BasicProperties.Builder().replyTo(QUEUE_NAME).correlationId(correlationId).build();
-    channel.basicPublish(DEFAULT_EXCHANGE, msg.getQueue(), properties, msg.toString().getBytes());
-    channel.close();
+    // invalid request
+    if (requestFuncName.equals("")) {
+      throw new BadRequestException("Invalid body.");
+    }
+
+    String funcToCall = Config.getInstance().getProperty(requestFuncName);
+    if (funcToCall == null) {
+      throw new BadRequestException("Invalid body.");
+    }
+
+    boolean result =
+        (boolean) HealthController.class.getMethod(funcToCall, JsonObject.class).invoke(null, body);
+
+    if (!result) {
+      throw new BadRequestException("Failed to execute function.");
+    }
+
+    JsonObject response = new JsonObject();
+    response.addProperty("response", "Function executed.");
+
+    ctx.writeAndFlush(response);
   }
 }

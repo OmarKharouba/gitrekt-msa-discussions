@@ -6,11 +6,12 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/** A Utility class for verifying and decoding JSON Web Tokens (JWT). */
+/** A Utility class for creating, verifying and decoding JSON Web Tokens (JWT). */
 public class Jwt {
 
   /**
@@ -23,6 +24,21 @@ public class Jwt {
   private static final Algorithm ALGORITHM = Algorithm.HMAC512(SECRET);
 
   private static final JWTVerifier JWT_VERIFIER = JWT.require(ALGORITHM).withIssuer(ISSUER).build();
+
+  /**
+   * Generates a JWT Token given the claims and the expiration duration in minutes.
+   *
+   * @param claims The claims to add to the JWT Payload
+   * @param expirationMinutes The expiration duration in minutes
+   * @return A String representing the generated token
+   */
+  public static String generateToken(Map<String, String> claims, long expirationMinutes) {
+    return createJwtWithClaims(claims)
+        .withIssuer(ISSUER)
+        .withIssuedAt(new Date())
+        .withExpiresAt(new Date(System.currentTimeMillis() + expirationMinutes * 60 * 1000))
+        .sign(Algorithm.HMAC512(SECRET));
+  }
 
   /**
    * This method will verify and decode the JWT, returning a Map of String claims. If the JWT is
@@ -43,5 +59,19 @@ public class Jwt {
       }
     }
     return claims;
+  }
+
+  /**
+   * This method create the JWT Builder and adds the claims to the JWT payload.
+   *
+   * @param claims The claims to be added to the JWT Payload.
+   * @return The JWTCreator.Builder
+   */
+  private static JWTCreator.Builder createJwtWithClaims(Map<String, String> claims) {
+    JWTCreator.Builder builder = JWT.create();
+    for (String key : claims.keySet()) {
+      builder.withClaim(key, claims.get(key));
+    }
+    return builder;
   }
 }

@@ -1,19 +1,23 @@
 package com.gitrekt.quora.config;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class Config {
 
-  private static final Logger LOGGER = Logger.getLogger(Config.class.getName());
-
   private static Config instance;
 
-  /**
-   * Properties Map.
-   */
+  static {
+    try {
+      instance = new Config();
+    } catch (IOException exception) {
+      throw new ExceptionInInitializerError(exception);
+    }
+  }
+
+  /** Properties Map. */
   private Properties properties;
 
   private Config() throws IOException {
@@ -26,8 +30,8 @@ public class Config {
   }
 
   /**
-   * Returns the property mapped by @code name or
-   * null if it does not exist.
+   * Returns the property mapped by @code name or null if it does not exist.
+   *
    * @param name The property name
    * @return The result or null
    */
@@ -36,19 +40,36 @@ public class Config {
   }
 
   /**
+   * Set value of property.
+   *
+   * @param key key of the property
+   * @param value value of the property
+   */
+  public void setProperty(String key, String value) throws IOException {
+    this.properties.setProperty(key, value);
+    writeConfigFile();
+  }
+
+  /** Delete property from config file. */
+  public void deleteProperty(String key) throws IOException {
+    this.properties.remove(key);
+    writeConfigFile();
+  }
+
+  /**
+   * Write the config file to the disk.
+   */
+  private void writeConfigFile() throws IOException {
+    properties.store(
+        new FileOutputStream(getClass().getClassLoader().getResource("config.cfg").getFile()),
+        "Service Properties");
+  }
+
+  /**
    * Returns the Singleton Instance.
    * @return The Configuration Instance
-   * @throws IOException If an IO error occurs when reading the file
    */
-  public static Config getInstance() throws IOException {
-    if (instance != null) {
-      return instance;
-    }
-    synchronized (Config.class) {
-      if (instance == null) {
-        instance = new Config();
-      }
-    }
+  public static Config getInstance() {
     return instance;
   }
 }
