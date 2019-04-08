@@ -1,8 +1,13 @@
 package com.gitrekt.quora.server;
 
+import com.gitrekt.quora.commands.Command;
+import com.gitrekt.quora.commands.handlers.GetQuestion;
 import com.gitrekt.quora.database.postgres.PostgresConnection;
+import com.gitrekt.quora.exceptions.AuthenticationException;
+import com.gitrekt.quora.exceptions.BadRequestException;
 import com.gitrekt.quora.logging.ServiceLogger;
 import com.gitrekt.quora.queue.MessageQueueConsumer;
+import com.google.gson.JsonObject;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -14,6 +19,8 @@ import io.netty.handler.logging.LoggingHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.sql.SQLException;
+import java.util.HashMap;
 
 public class NettyHttpServer {
 
@@ -96,6 +103,20 @@ public class NettyHttpServer {
     } catch (IOException exception) {
       exception.printStackTrace();
     }
+
+//    HashMap<String, Object> map = new HashMap<>();
+//    map.put("question_id", "5f7d5b2c-ea5a-4c52-bb11-af70e16f3649");
+//    Command cmd = new GetQuestion(map);
+//    try {
+//      System.out.println(((JsonObject)cmd.execute()).toString());
+//    } catch (SQLException e) {
+//      e.printStackTrace();
+//    } catch (BadRequestException e) {
+//      e.printStackTrace();
+//    } catch (AuthenticationException e) {
+//      e.printStackTrace();
+//    }
+
     /*
      * Controller Health.
      */
