@@ -44,11 +44,12 @@ public class UpdateDiscussion extends Command {
     if (args.containsKey("topic_id")) modifiedFields.put("topic_id", (String) args.get("topic_id"));
 
     if (!modifiedFields.isEmpty()) {
-      String sql = "UPDATE discussion SET ";
+      String sql = "UPDATE discussions SET ";
       boolean first = true;
       for (Map.Entry<String, String> e : modifiedFields.entrySet()) {
         if (!first) sql += ", ";
-        sql += e.getKey() + "=" + e.getValue();
+        first = false;
+        sql += e.getKey() + "=\'" + e.getValue() + "\'";
       }
       sql += " WHERE id=?";
 

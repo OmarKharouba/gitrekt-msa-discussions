@@ -13,7 +13,7 @@ import java.util.UUID;
 
 /** This command adds a new discussion with the given arguments. */
 public class PostDiscussion extends Command {
-  static String[] argsNames = {"user_id", "title", "body", "is_public", "poll_id", "topic_id"};
+  static String[] argsNames = {"user_id", "title", "body", "is_public", "topic_id"};
 
   public PostDiscussion(HashMap<String, Object> args) {
     super(args);
@@ -30,7 +30,7 @@ public class PostDiscussion extends Command {
     String title = (String) args.get("title");
     String body = (String) args.get("body");
     String isPublic = (String) args.get("is_public");
-    String pollId = (String) args.get("poll_id");
+    String pollId = args.containsKey("poll_id") ? (String) args.get("poll_id") : null;
     String topicId = (String) args.get("topic_id");
     UUID discussionId = UUID.randomUUID();
 
@@ -40,7 +40,7 @@ public class PostDiscussion extends Command {
         body,
         0,
         isPublic,
-        UUID.fromString(pollId),
+        pollId == null ? null : UUID.fromString(pollId),
         UUID.fromString(topicId),
         UUID.fromString(userId));
 

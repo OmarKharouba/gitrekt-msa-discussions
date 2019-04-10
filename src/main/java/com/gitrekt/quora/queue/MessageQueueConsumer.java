@@ -86,11 +86,20 @@ public class MessageQueueConsumer {
 
                 String commandName = request.get("command").getAsString();
                 HashMap<String, Object> arguments = new HashMap<>();
-                JsonObject requestBody = request.getAsJsonObject("body");
+                JsonObject requestBody;
+
+                if (request.has("body")) {
+                  requestBody = request.getAsJsonObject("body");
+                } else {
+                  requestBody = request.getAsJsonObject("queryParams");
+                }
+
                 for (String key : requestBody.keySet()) {
                   arguments.put(key, requestBody.get(key).getAsString());
                 }
-                
+
+                System.out.println(commandName);
+
                 String replyTo = properties.getReplyTo();
                 BasicProperties replyProperties =
                     new BasicProperties.Builder()
@@ -102,7 +111,7 @@ public class MessageQueueConsumer {
                 try {
                   JsonObject result = (JsonObject) Invoker.invoke(commandName, arguments);
                   response.addProperty("statusCode", "200");
-                  response.addProperty("response", result.getAsString());
+                  response.add("response", result);
                 } catch (ServerException exception) {
                   response.addProperty("statusCode", String.valueOf(exception.getCode().code()));
                   response.addProperty("error", exception.getMessage());
@@ -117,6 +126,7 @@ public class MessageQueueConsumer {
                   LOGGER.log(
                       String.format(
                           "Error executing command %s\n%s", commandName, exception.getMessage()));
+                  exception.printStackTrace();
                 }
 
                 try {

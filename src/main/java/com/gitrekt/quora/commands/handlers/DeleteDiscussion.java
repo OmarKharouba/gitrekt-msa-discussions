@@ -28,9 +28,11 @@ public class DeleteDiscussion extends Command {
     String discussionId = (String) args.get("discussion_id");
 
     String sql = "DELETE FROM discussions WHERE id = ?";
+
     CallableStatement callableStatement = connection.prepareCall(sql);
 
     callableStatement.setObject(1, UUID.fromString(discussionId), Types.OTHER);
+
 
     callableStatement.execute();
 
