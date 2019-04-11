@@ -1,7 +1,6 @@
 package com.gitrekt.quora.database.postgres.handlers;
 
 import com.gitrekt.quora.database.postgres.PostgresConnection;
-import org.apache.commons.dbutils.QueryRunner;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -17,7 +16,7 @@ public abstract class PostgresHandler<T> {
   /**
    * Postgres Handler Constructor.
    *
-   * @param table Table name.
+   * @param table  Table name.
    * @param mapper Class to map rows to.
    */
 
@@ -31,7 +30,7 @@ public abstract class PostgresHandler<T> {
   protected ResultSet call(String sql, int[] types, Object... params) throws SQLException {
     // DbUtils does not support calling procedures?
     CallableStatement callableStatement = connection.prepareCall(sql);
-    for (int i = 0;i < types.length;i++) {
+    for (int i = 0; i < types.length; i++) {
       callableStatement.setObject(i + 1, params[i], types[i]);
     }
     boolean containsResults = callableStatement.execute();

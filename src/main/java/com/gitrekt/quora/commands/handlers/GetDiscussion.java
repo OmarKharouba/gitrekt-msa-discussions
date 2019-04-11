@@ -4,6 +4,8 @@ import com.gitrekt.quora.commands.Command;
 import com.gitrekt.quora.database.postgres.handlers.DiscussionsPostgresHandler;
 import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
+import com.gitrekt.quora.exceptions.NotFoundException;
+import com.gitrekt.quora.exceptions.ServerException;
 import com.gitrekt.quora.models.Discussion;
 import com.google.gson.JsonObject;
 
@@ -16,8 +18,8 @@ public class GetDiscussion extends Command {
   }
 
   @Override
-  public Object execute() throws SQLException, BadRequestException, AuthenticationException {
-    checkArguments(new String[] {"discussion_id"});
+  public Object execute() throws ServerException, SQLException {
+    checkArguments(new String[]{"discussion_id"});
 
     String discussionId = (String) args.get("discussion_id");
 
@@ -37,6 +39,10 @@ public class GetDiscussion extends Command {
     resBody.addProperty("poll_id", discussion.getPollId());
     resBody.addProperty("topic_id", discussion.getTopicId());
     resBody.addProperty("user_id", discussion.getUserId());
+    resBody.addProperty("created_at", discussion.getCreatedAt().toString());
+    if (discussion.getDeletedAt() != null) {
+      throw new NotFoundException();
+    }
 
     res.add("body", resBody);
 

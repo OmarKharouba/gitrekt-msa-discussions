@@ -23,14 +23,17 @@ public class NettyHttpServer {
   private NioEventLoopGroup bossGroup;
   private NioEventLoopGroup workerGroup;
 
-  public NettyHttpServer() {}
+  public NettyHttpServer() {
+  }
 
   public void init() {
     this.bootstrapServer();
     this.listen();
   }
 
-  /** Bootstrap the server. */
+  /**
+   * Bootstrap the server.
+   */
   public void bootstrapServer() {
     bootstrap = new ServerBootstrap();
 
@@ -46,15 +49,17 @@ public class NettyHttpServer {
     // https://stackoverflow.com/a/39440698/1508542
 
     bootstrap
-        .group(bossGroup, workerGroup)
-        .channel(NioServerSocketChannel.class)
-        .handler(new LoggingHandler(LogLevel.INFO)) // log only for parent
-        .childHandler(new HttpServerInitializer())
-        .option(ChannelOption.SO_BACKLOG, 128) // max queue length for incoming connections
-        .childOption(ChannelOption.SO_KEEPALIVE, true); // tcp keep-alive header
+            .group(bossGroup, workerGroup)
+            .channel(NioServerSocketChannel.class)
+            .handler(new LoggingHandler(LogLevel.INFO)) // log only for parent
+            .childHandler(new HttpServerInitializer())
+            .option(ChannelOption.SO_BACKLOG, 128) // max queue length for incoming connections
+            .childOption(ChannelOption.SO_KEEPALIVE, true); // tcp keep-alive header
   }
 
-  /** Start the server on host:port. */
+  /**
+   * Start the server on host:port.
+   */
   private void listen() {
     try {
       final String host = System.getenv("SERVER_HOST");
@@ -64,17 +69,19 @@ public class NettyHttpServer {
       ChannelFuture future = bootstrap.bind(new InetSocketAddress(host, port));
 
       future.addListener(
-          new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-              if (channelFuture.isSuccess()) {
-                LOGGER.log(String.format("Server Listening on http://%s:%s", host, port));
-              } else {
-                LOGGER.log(
-                    String.format("Failed to start server %s", channelFuture.cause().toString()));
+            new ChannelFutureListener() {
+              @Override
+              public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                if (channelFuture.isSuccess()) {
+                  LOGGER.log(String.format("Server Listening on http://%s:%s", host, port));
+                } else {
+                  LOGGER.log(
+                          String.format(
+                                  "Failed to start server %s", channelFuture.cause().toString()));
+                }
               }
             }
-          });
+      );
 
       future.channel().closeFuture().sync();
     } catch (InterruptedException exception) {
@@ -85,7 +92,9 @@ public class NettyHttpServer {
     }
   }
 
-  /** Start the server. */
+  /**
+   * Start the server.
+   */
   public static void main(String[] args) {
 
     // Start DB pool
@@ -97,18 +106,18 @@ public class NettyHttpServer {
       exception.printStackTrace();
     }
 
-//    HashMap<String, Object> map = new HashMap<>();
-//    map.put("question_id", "5f7d5b2c-ea5a-4c52-bb11-af70e16f3649");
-//    Command cmd = new GetQuestion(map);
-//    try {
-//      System.out.println(((JsonObject)cmd.execute()).toString());
-//    } catch (SQLException e) {
-//      e.printStackTrace();
-//    } catch (BadRequestException e) {
-//      e.printStackTrace();
-//    } catch (AuthenticationException e) {
-//      e.printStackTrace();
-//    }
+    //    HashMap<String, Object> map = new HashMap<>();
+    //    map.put("question_id", "5f7d5b2c-ea5a-4c52-bb11-af70e16f3649");
+    //    Command cmd = new GetQuestion(map);
+    //    try {
+    //      System.out.println(((JsonObject) cmd.execute()).toString());
+    //    } catch (SQLException e) {
+    //      e.printStackTrace();
+    //    } catch (BadRequestException e) {
+    //      e.printStackTrace();
+    //    } catch (AuthenticationException e) {
+    //      e.printStackTrace();
+    //    }
 
     /*
      * Controller Health.

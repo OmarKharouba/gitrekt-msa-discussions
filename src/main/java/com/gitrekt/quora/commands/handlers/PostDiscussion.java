@@ -38,7 +38,6 @@ public class PostDiscussion extends Command {
         discussionId,
         title,
         body,
-        0,
         isPublic,
         pollId == null ? null : UUID.fromString(pollId),
         UUID.fromString(topicId),

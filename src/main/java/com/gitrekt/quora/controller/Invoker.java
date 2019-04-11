@@ -5,6 +5,7 @@ import com.gitrekt.quora.config.Config;
 import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
 import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
+import com.gitrekt.quora.exceptions.ServerException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,9 +21,8 @@ public final class Invoker {
    * Run the command using reflection.
    */
   public static Object invoke(String commandName, HashMap<String, Object> arguments)
-      throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
-          InvocationTargetException, InstantiationException, SQLException, BadRequestException,
-          AuthenticationException {
+          throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+          InvocationTargetException, InstantiationException, SQLException, ServerException {
 
     String commandClassPath =
         CONFIG.getProperty("commands") + "." + CONFIG.getProperty(commandName);

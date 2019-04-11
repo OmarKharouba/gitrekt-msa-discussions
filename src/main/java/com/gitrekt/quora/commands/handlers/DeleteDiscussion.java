@@ -16,27 +16,26 @@ import java.util.UUID;
 
 public class DeleteDiscussion extends Command {
 
-    public DeleteDiscussion(HashMap<String, Object> args) {
-        super(args);
-    }
+  public DeleteDiscussion(HashMap<String, Object> args) {
+    super(args);
+  }
 
-    @Override
-    public Object execute() throws SQLException, BadRequestException, AuthenticationException {
-        checkArguments(new String[]{"discussion_id"});
+  @Override
+  public Object execute() throws SQLException, BadRequestException, AuthenticationException {
+    checkArguments(new String[]{"discussion_id"});
+    DiscussionsPostgresHandler discussionHandler = new DiscussionsPostgresHandler();
 
-        DiscussionsPostgresHandler discussionHandler = new DiscussionsPostgresHandler();
 
+    Connection connection = PostgresConnection.getInstance().getConnection();
 
-        Connection connection = PostgresConnection.getInstance().getConnection();
+    String discussionId = (String) args.get("discussion_id");
 
-        String discussionId = (String) args.get("discussion_id");
+    discussionHandler.deleteDiscussion(discussionId);
 
-        discussionHandler.deleteDiscussion(discussionId);
+    JsonObject res = new JsonObject();
+    res.addProperty("status_code", 200);
+    res.addProperty("message", "Discussion deleted successfully");
 
-        JsonObject res = new JsonObject();
-        res.addProperty("status_code", 200);
-        res.addProperty("message", "Discussion deleted successfully");
-
-        return res;
-    }
+    return res;
+  }
 }

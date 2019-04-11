@@ -1,5 +1,7 @@
 package com.gitrekt.quora.models;
 
+import java.sql.Timestamp;
+
 public class Discussion {
 
   private String id;
@@ -10,6 +12,24 @@ public class Discussion {
   private String pollId;
   private String topicId;
   private String userId;
+  private Timestamp createdAt;
+  private Timestamp deletedAt;
+
+  public Timestamp getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Timestamp createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Timestamp getDeletedAt() {
+    return deletedAt;
+  }
+
+  public void setDeletedAt(Timestamp deletedAt) {
+    this.deletedAt = deletedAt;
+  }
 
   public String getId() {
     return id;
@@ -78,28 +98,28 @@ public class Discussion {
   @Override
   public String toString() {
     return "Discussion{"
-        + "id='"
-        + id
-        + '\''
-        + ", title='"
-        + title
-        + '\''
-        + ", body='"
-        + body
-        + '\''
-        + ", subscribersCount="
-        + subscribersCount
-        + ", isPublic="
-        + isPublic
-        + ", pollId='"
-        + pollId
-        + '\''
-        + ", topicId='"
-        + topicId
-        + '\''
-        + ", userId='"
-        + userId
-        + '\''
-        + '}';
+            + "id='"
+            + id
+            + '\''
+            + ", title='"
+            + title
+            + '\''
+            + ", body='"
+            + body
+            + '\''
+            + ", subscribersCount="
+            + subscribersCount
+            + ", isPublic="
+            + isPublic
+            + ", pollId='"
+            + pollId
+            + '\''
+            + ", topicId='"
+            + topicId
+            + '\''
+            + ", userId='"
+            + userId
+            + '\''
+            + '}';
   }
 }
