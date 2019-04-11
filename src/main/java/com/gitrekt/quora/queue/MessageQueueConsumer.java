@@ -98,8 +98,6 @@ public class MessageQueueConsumer {
                   arguments.put(key, requestBody.get(key).getAsString());
                 }
 
-                System.out.println(commandName);
-
                 String replyTo = properties.getReplyTo();
                 BasicProperties replyProperties =
                     new BasicProperties.Builder()
