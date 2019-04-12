@@ -1,8 +1,8 @@
 package com.gitrekt.quora.server.middlewares;
 
+import com.gitrekt.quora.exceptions.MethodNotAllowed;
 import com.gitrekt.quora.exceptions.NotFoundException;
 import com.gitrekt.quora.models.Request;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
@@ -10,14 +10,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.HttpMethod;
 
 import java.nio.charset.StandardCharsets;
 
 public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg)
-      throws NotFoundException {
+          throws MethodNotAllowed, NotFoundException {
 
     // msg is not valid close
     if (msg.decoderResult() != DecoderResult.SUCCESS) {
@@ -25,14 +25,14 @@ public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
       return;
     }
 
-    // Decode Path
-    QueryStringDecoder decoder = new QueryStringDecoder(msg.uri());
-    String[] path = decoder.path().substring(1).split("/");
+    if (msg.method() != HttpMethod.POST) {
+      throw new MethodNotAllowed();
+    }
 
-    // Invalid Request
-    if (path.length < 3) {
+    if (!msg.uri().equals("/health")) {
       throw new NotFoundException();
     }
+
 
     // try to parse body
     ByteBuf content = msg.content(); // msg body
@@ -46,54 +46,10 @@ public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
     }
 
     // Create request object
-
     Request request = new Request();
-
-    // Http Method, Path without queryParams, Query Params
-    // Body if found
-
-    request.setHttpMethod(msg.method().toString().toLowerCase());
-    request.setPath(decoder.path());
-    request.setQueryParams(decoder.parameters());
     request.setBody(body);
 
-    // Parse the queue name and command from the url
-    // either command is in uri as in @1 or
-    // extract command from path and httpMethod @2
-    // URI: /api/v1/users/follow?id=1
-    // PATH: /api/v1/users/follow @1
-    // PATH: /api/v1/users?id=1 @2
-
-    request.setQueue(path[2] + '-' + path[1] + '-' + "queue"); // API versioned ex: users-v1-queue
-
-    String service = path[2].substring(0, 1).toUpperCase() + path[2].substring(1);
-
-    if (path.length > 3) {
-      request.setCommand(path[3] + service + "V1"); // followUsersV1
-    } else {
-      request.setCommand(
-          request.getHttpMethod().substring(0, 1).toUpperCase()
-              + request.getHttpMethod().substring(1)
-              + service
-              + "V1"); // GetUsersV1
-    }
-
-    // JWT token
-    // set token if auth header is set
-    // format: Bearer xxxxxx-xxxxxx-xxxxxx
-
-    String authHeader = msg.headers().get("Authorization");
-    if (authHeader != null) {
-      String[] auth = authHeader.split(" ");
-      if (auth.length > 1) {
-        request.setJwt(auth[1]);
-      }
-    }
+    //    ctx.writeAndFlush(request);
     ctx.fireChannelRead(request);
-  }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    ctx.channel().writeAndFlush(cause).channel().closeFuture();
   }
 }

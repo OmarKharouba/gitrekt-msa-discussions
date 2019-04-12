@@ -3,6 +3,7 @@ package com.gitrekt.quora.commands;
 import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
 import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
+import com.gitrekt.quora.exceptions.ServerException;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -35,5 +36,5 @@ public abstract class Command {
   }
 
   public abstract Object execute()
-          throws SQLException, BadRequestException, AuthenticationException;
+      throws SQLException,ServerException;
 }

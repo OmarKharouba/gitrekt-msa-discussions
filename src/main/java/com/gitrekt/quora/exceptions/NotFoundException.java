@@ -4,15 +4,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class NotFoundException extends ServerException {
 
-  private String error;
-
   public NotFoundException() {
-    error = "404 not found.";
-  }
-
-  @Override
-  public String getMessage() {
-    return error;
+    super("404 not found.");
   }
 
   @Override
