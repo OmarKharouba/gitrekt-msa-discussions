@@ -1,6 +1,6 @@
 package com.gitrekt.quora.models;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.sql.Timestamp;
 
@@ -16,13 +16,13 @@ public class Discussion {
   private String userId;
   private Timestamp createdAt;
   private Timestamp deletedAt;
-  private JSONObject media;
+  private JsonObject media;
 
-  public JSONObject getMedia() {
+  public JsonObject getMedia() {
     return media;
   }
 
-  public void setMedia(JSONObject media) {
+  public void setMedia(JsonObject media) {
     this.media = media;
   }
 

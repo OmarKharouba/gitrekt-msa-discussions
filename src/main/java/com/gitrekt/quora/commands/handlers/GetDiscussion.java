@@ -8,6 +8,7 @@ import com.gitrekt.quora.exceptions.NotFoundException;
 import com.gitrekt.quora.exceptions.ServerException;
 import com.gitrekt.quora.models.Discussion;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class GetDiscussion extends Command {
     resBody.addProperty("topic_id", discussion.getTopicId());
     resBody.addProperty("user_id", discussion.getUserId());
     resBody.addProperty("created_at", discussion.getCreatedAt().toString());
-    resBody.addProperty("media", discussion.getMedia() == null ? null : discussion.getMedia().toString());
+    resBody.add("media", discussion.getMedia() == null ? null : discussion.getMedia());
 
     res.add("body", resBody);
 

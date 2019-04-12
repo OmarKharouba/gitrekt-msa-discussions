@@ -2,6 +2,7 @@ package com.gitrekt.quora.database.postgres.handlers;
 
 import com.gitrekt.quora.database.postgres.PostgresConnection;
 import com.gitrekt.quora.models.Discussion;
+import com.google.gson.JsonParser;
 import org.json.JSONObject;
 
 import java.sql.CallableStatement;
@@ -53,7 +54,7 @@ public class DiscussionsPostgresHandler extends PostgresHandler<Discussion> {
       discussion.setUserId(query.getString("user_id"));
       discussion.setCreatedAt(query.getTimestamp("created_at"));
       discussion.setDeletedAt(query.getTimestamp("deleted_at"));
-      discussion.setMedia(query.getString("media") == null ? null : new JSONObject(query.getString("media")));
+      discussion.setMedia(query.getString("media") == null ? null : new JsonParser().parse(query.getString("media")).getAsJsonObject());
     }
 
     return discussion;

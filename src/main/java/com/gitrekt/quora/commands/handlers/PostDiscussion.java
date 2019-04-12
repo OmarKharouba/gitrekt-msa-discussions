@@ -6,6 +6,7 @@ import com.gitrekt.quora.exceptions.AuthenticationException;
 import com.gitrekt.quora.exceptions.BadRequestException;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public class PostDiscussion extends Command {
     UUID discussionId = args.containsKey("discussion_id") ? UUID.fromString((String) args.get("discussion_id")) : UUID.randomUUID();
     String media = args.containsKey("media") ? (String) args.get("media") : null;
 
+    System.out.println(args);
+
     discussionHandler.postDiscussion(
             discussionId,
             title,
@@ -56,7 +59,7 @@ public class PostDiscussion extends Command {
     resBody.addProperty("is_public", isPublic);
     resBody.addProperty("topic_id", topicId);
     resBody.addProperty("user_id", userId);
-    resBody.addProperty("media", media);
+    resBody.add("media",media==null? null: new JsonParser().parse(media).getAsJsonObject());
 
     res.add("body", resBody);
 
