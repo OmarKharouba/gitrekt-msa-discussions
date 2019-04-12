@@ -1,5 +1,6 @@
 package com.gitrekt.quora.database.postgres;
 
+import com.gitrekt.quora.logging.ServiceLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
@@ -12,7 +13,6 @@ public class PostgresConnection {
 
   public PostgresConnection() {
     initDatasource();
-    connect();
   }
 
   /** Set Database Pool. */
@@ -32,18 +32,19 @@ public class PostgresConnection {
     dataSource.addDataSourceProperty("databaseName", System.getenv("POSTGRES_DB"));
   }
 
-  /** Connect to database. */
-  private void connect() {
-    try {
-      this.conn = dataSource.getConnection();
-      System.out.println("Connected to the PostgreSQL server successfully.");
-    } catch (SQLException exception) {
-      System.out.println(exception.getMessage());
-    }
-  }
-
+  /**
+   * Get connection from the pool.
+   */
   public Connection getConnection() {
-    return conn;
+    try {
+      if (dataSource == null || dataSource.isClosed()) {
+        initDatasource();
+      }
+      return dataSource.getConnection();
+    } catch (SQLException exception) {
+      ServiceLogger.getInstance().log(exception.getMessage());
+    }
+    return null;
   }
 
   public void closeConnection() {
