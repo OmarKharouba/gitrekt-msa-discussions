@@ -27,6 +27,10 @@ public class GetDiscussion extends Command {
 
     Discussion discussion = handler.getDiscussion(discussionId);
 
+    if (discussion.getId() == null || discussion.getDeletedAt() != null) {
+      throw new NotFoundException();
+    }
+
     JsonObject res = new JsonObject();
     res.addProperty("status_code", 200);
 
@@ -40,9 +44,7 @@ public class GetDiscussion extends Command {
     resBody.addProperty("topic_id", discussion.getTopicId());
     resBody.addProperty("user_id", discussion.getUserId());
     resBody.addProperty("created_at", discussion.getCreatedAt().toString());
-    if (discussion.getDeletedAt() != null) {
-      throw new NotFoundException();
-    }
+    resBody.addProperty("media", discussion.getMedia() == null ? null : discussion.getMedia().toString());
 
     res.add("body", resBody);
 

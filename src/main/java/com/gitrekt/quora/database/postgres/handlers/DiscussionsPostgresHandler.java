@@ -2,6 +2,7 @@ package com.gitrekt.quora.database.postgres.handlers;
 
 import com.gitrekt.quora.database.postgres.PostgresConnection;
 import com.gitrekt.quora.models.Discussion;
+import org.json.JSONObject;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -35,7 +36,7 @@ public class DiscussionsPostgresHandler extends PostgresHandler<Discussion> {
    * return a discussion with a specific ID from the database.
    */
   public Discussion getDiscussion(String discussionId) throws SQLException {
-    String sql = "SELECT * FROM discussions WHERE id=?";
+    String sql = "SELECT * FROM discussions WHERE id = ?";
 
     ResultSet query = call(sql, new int[]{Types.OTHER}, discussionId);
 
@@ -52,6 +53,7 @@ public class DiscussionsPostgresHandler extends PostgresHandler<Discussion> {
       discussion.setUserId(query.getString("user_id"));
       discussion.setCreatedAt(query.getTimestamp("created_at"));
       discussion.setDeletedAt(query.getTimestamp("deleted_at"));
+      discussion.setMedia(query.getString("media") == null ? null : new JSONObject(query.getString("media")));
     }
 
     return discussion;
@@ -90,13 +92,13 @@ public class DiscussionsPostgresHandler extends PostgresHandler<Discussion> {
   /**
    * Deletes a discussion from the database given its ID.
    */
-  public void deleteDiscussion(String discussionId) throws SQLException {
-    String sql = "UPDATE discussions SET deleted_at = now()";
-    sql += " WHERE id=?";
+  public void deleteDiscussion(String discussionId, String userId) throws SQLException {
 
+    String sql = "CALL Delete_Discussion(?, ?)";
     CallableStatement callableStatement = connection.prepareCall(sql);
 
-    callableStatement.setObject(1, UUID.fromString(discussionId), Types.OTHER);
+    callableStatement.setObject(1, discussionId, Types.OTHER);
+    callableStatement.setObject(2, userId, Types.OTHER);
 
     callableStatement.execute();
   }

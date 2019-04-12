@@ -30,7 +30,8 @@ public class DeleteDiscussion extends Command {
 
     String discussionId = (String) args.get("discussion_id");
 
-    discussionHandler.deleteDiscussion(discussionId);
+    // TODO: replace this user ID with the actual current user
+    discussionHandler.deleteDiscussion(discussionId,"7b33e4fc-1a41-4661-a4d9-563fc21cd89e");
 
     JsonObject res = new JsonObject();
     res.addProperty("status_code", 200);

@@ -1,5 +1,7 @@
 package com.gitrekt.quora.models;
 
+import org.json.JSONObject;
+
 import java.sql.Timestamp;
 
 public class Discussion {
@@ -14,6 +16,15 @@ public class Discussion {
   private String userId;
   private Timestamp createdAt;
   private Timestamp deletedAt;
+  private JSONObject media;
+
+  public JSONObject getMedia() {
+    return media;
+  }
+
+  public void setMedia(JSONObject media) {
+    this.media = media;
+  }
 
   public Timestamp getCreatedAt() {
     return createdAt;

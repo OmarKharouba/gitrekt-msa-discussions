@@ -11,7 +11,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
-/** This command adds a new discussion with the given arguments. */
+/**
+ * This command adds a new discussion with the given arguments.
+ */
 public class PostDiscussion extends Command {
   static String[] argsNames = {"user_id", "title", "body", "is_public", "topic_id"};
 
@@ -30,18 +32,19 @@ public class PostDiscussion extends Command {
     String title = (String) args.get("title");
     String body = (String) args.get("body");
     String isPublic = (String) args.get("is_public");
-    String pollId = args.containsKey("poll_id") ? (String) args.get("poll_id") : null;
     String topicId = (String) args.get("topic_id");
-    UUID discussionId = UUID.randomUUID();
+    UUID discussionId = args.containsKey("discussion_id") ? UUID.fromString((String) args.get("discussion_id")) : UUID.randomUUID();
+    String media = args.containsKey("media") ? (String) args.get("media") : null;
 
     discussionHandler.postDiscussion(
-        discussionId,
-        title,
-        body,
-        isPublic,
-        pollId == null ? null : UUID.fromString(pollId),
-        UUID.fromString(topicId),
-        UUID.fromString(userId));
+            discussionId,
+            title,
+            body,
+            isPublic,
+            UUID.fromString(topicId),
+            UUID.fromString(userId),
+            media
+    );
 
     JsonObject res = new JsonObject();
     res.addProperty("status_code", 200);
@@ -51,9 +54,9 @@ public class PostDiscussion extends Command {
     resBody.addProperty("body", body);
     resBody.addProperty("subscribers_count", 0);
     resBody.addProperty("is_public", isPublic);
-    resBody.addProperty("poll_id", pollId);
     resBody.addProperty("topic_id", topicId);
     resBody.addProperty("user_id", userId);
+    resBody.addProperty("media", media);
 
     res.add("body", resBody);
 
