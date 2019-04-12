@@ -80,79 +80,80 @@ public class MessageQueueConsumer {
               final AMQP.BasicProperties properties,
               final byte[] body) {
 
-        Runnable runnable =
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    JsonObject request =
-                            new JsonParser()
-                                    .parse(new String(body, StandardCharsets.UTF_8))
-                                    .getAsJsonObject();
+        Runnable runnable = new Runnable() {
+          @Override
+          public void run() {
+            JsonObject request =
+                    new JsonParser()
+                            .parse(new String(body, StandardCharsets.UTF_8))
+                            .getAsJsonObject();
 
-                    String commandName = request.get("command").getAsString();
-                    HashMap<String, Object> arguments = new HashMap<>();
-                    JsonObject requestBody;
+            String commandName = request.get("command").getAsString();
+            HashMap<String, Object> arguments = new HashMap<>();
+            JsonObject requestBody;
 
-                    if (request.has("body")) {
-                      requestBody = request.getAsJsonObject("body");
-                      for (String key : requestBody.keySet()) {
-                        if (requestBody.get(key).isJsonPrimitive()) {
-                          arguments.put(key, requestBody.get(key).getAsString());
-                        } else {
-                          arguments.put(key, requestBody.get(key).toString());
-                        }
-                      }
-                    } else {
-                      requestBody = request.getAsJsonObject("queryParams");
-                      for (String key : requestBody.keySet()) {
-                        arguments.put(key, requestBody.get(key).getAsString());
-                      }
-                    }
+            if (request.has("body")) {
+              requestBody = request.getAsJsonObject("body");
+              for (String key : requestBody.keySet()) {
+                if (requestBody.get(key).isJsonPrimitive()) {
+                  arguments.put(key, requestBody.get(key).getAsString());
+                } else {
+                  arguments.put(key, requestBody.get(key).toString());
+                }
+              }
+            } else {
+              requestBody = request.getAsJsonObject("queryParams");
+              for (String key : requestBody.keySet()) {
+                arguments.put(key, requestBody.get(key).getAsString());
+              }
+            }
 
-                    String replyTo = properties.getReplyTo();
-                    BasicProperties replyProperties =
-                            new BasicProperties.Builder()
-                                    .correlationId(properties.getCorrelationId())
-                                    .build();
+            String replyTo = properties.getReplyTo();
+            BasicProperties replyProperties =
+                    new BasicProperties.Builder()
+                            .correlationId(properties.getCorrelationId())
+                            .build();
 
-                    JsonObject response = new JsonObject();
+            JsonObject response = new JsonObject();
 
-                    try {
-                      JsonObject result = (JsonObject) Invoker.invoke(commandName, arguments);
-                      response.addProperty("statusCode", "200");
-                      response.add("response", result);
-                    } catch (ServerException exception) {
-                      response.addProperty("statusCode", String.valueOf(exception.getCode().code()));
-                      response.addProperty("error", exception.getMessage());
-                    } catch (SQLException exception) {
-                      response.addProperty(
-                              "statusCode", String.valueOf(HttpResponseStatus.BAD_REQUEST));
-                      response.addProperty("error", exception.getMessage());
-                    } catch (Exception exception) {
-                      response.addProperty(
-                              "statusCode", String.valueOf(HttpResponseStatus.INTERNAL_SERVER_ERROR));
-                      response.addProperty("error", "Internal Server Error");
-                      LOGGER.log(
-                              String.format(
-                                      "Error executing command %s\n%s", commandName, exception.getMessage()));
-                      exception.printStackTrace();
-                    }
+            try {
+              JsonObject result = (JsonObject) Invoker.invoke(commandName, arguments);
+              response.addProperty("statusCode", "200");
+              response.add("response", result);
+            } catch (ServerException exception) {
+              response.addProperty("statusCode", String.valueOf(exception.getCode().code()));
+              response.addProperty("error", exception.getMessage());
+            } catch (SQLException exception) {
+              response.addProperty(
+                      "statusCode", String.valueOf(HttpResponseStatus.BAD_REQUEST));
+              response.addProperty("error", exception.getMessage());
+            } catch (Exception exception) {
+              response.addProperty(
+                      "statusCode", String.valueOf(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+              response.addProperty("error", "Internal Server Error");
+              LOGGER.log(
+                      String.format(
+                              "Error executing command %s\n%s",
+                              commandName, exception.getMessage()));
+              exception.printStackTrace();
+            }
 
-                    try {
-                      Channel channel = MessageQueueConnection.getInstance().createChannel();
-                      channel.basicPublish(
-                              "",
-                              replyTo,
-                              replyProperties,
-                              response.toString().getBytes(StandardCharsets.UTF_8));
-                      channel.close();
-                    } catch (IOException | TimeoutException exception) {
-                      LOGGER.log(
-                              String.format(
-                                      "Error sending the response to main server\n%s", exception.getMessage()));
-                    }
-                  }
-                };
+            try {
+              Channel channel = MessageQueueConnection.getInstance().createChannel();
+              channel.basicPublish(
+                      "",
+                      replyTo,
+                      replyProperties,
+                      response.toString().getBytes(StandardCharsets.UTF_8));
+              channel.close();
+            } catch (IOException | TimeoutException exception) {
+              LOGGER.log(
+                      String.format(
+                              "Error sending the response to main server\n%s",
+                              exception.getMessage()));
+            }
+          }
+        };
         ThreadPool.getInstance().run(runnable);
       }
     };

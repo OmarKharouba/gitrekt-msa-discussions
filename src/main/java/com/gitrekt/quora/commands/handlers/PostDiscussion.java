@@ -34,7 +34,8 @@ public class PostDiscussion extends Command {
     String body = (String) args.get("body");
     String isPublic = (String) args.get("is_public");
     String topicId = (String) args.get("topic_id");
-    UUID discussionId = args.containsKey("discussion_id") ? UUID.fromString((String) args.get("discussion_id")) : UUID.randomUUID();
+    UUID discussionId = args.containsKey("discussion_id")
+            ? UUID.fromString((String) args.get("discussion_id")) : UUID.randomUUID();
     String media = args.containsKey("media") ? (String) args.get("media") : null;
 
     System.out.println(args);
@@ -59,7 +60,7 @@ public class PostDiscussion extends Command {
     resBody.addProperty("is_public", isPublic);
     resBody.addProperty("topic_id", topicId);
     resBody.addProperty("user_id", userId);
-    resBody.add("media",media==null? null: new JsonParser().parse(media).getAsJsonObject());
+    resBody.add("media", media == null ? null : new JsonParser().parse(media).getAsJsonObject());
 
     res.add("body", resBody);
 
