@@ -8,22 +8,22 @@ variables:
   SERVER_NAME: 'discussions-server'
 
 stages:
-  - test
+#  - test
   - build
 
-test:
-  stage: test
-  script:
-    - apk update
-    - apk upgrade
-    - rm -rf .gitmodules
-    - mv .gitmodules-ci .gitmodules
-    - apk add git
-    - git submodule update --init --recursive
-    - apk add python python-dev py-pip build-base libffi-dev openssl-dev libgcc
-    - pip install --no-cache-dir docker-compose~=1.23.0
-    - docker-compose -f docker-compose-ci.yml up -d arangodb postgres
-    - docker-compose -f docker-compose-ci.yml run server sh -c "mvn test"
+#test:
+#  stage: test
+#  script:
+#    - apk update
+#    - apk upgrade
+#    - rm -rf .gitmodules
+#    - mv .gitmodules-ci .gitmodules
+#    - apk add git
+#    - git submodule update --init --recursive
+#    - apk add python python-dev py-pip build-base libffi-dev openssl-dev libgcc
+#    - pip install --no-cache-dir docker-compose~=1.23.0
+#    - docker-compose -f docker-compose-ci.yml up -d arangodb postgres
+#    - docker-compose -f docker-compose-ci.yml run server sh -c "mvn test"
 
 
 build:

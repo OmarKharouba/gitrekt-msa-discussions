@@ -88,6 +88,7 @@ public class MessageQueueConsumer {
                             .parse(new String(body, StandardCharsets.UTF_8))
                             .getAsJsonObject();
 
+            System.out.println(request);
             String commandName = request.get("command").getAsString();
             HashMap<String, Object> arguments = new HashMap<>();
             JsonObject requestBody;

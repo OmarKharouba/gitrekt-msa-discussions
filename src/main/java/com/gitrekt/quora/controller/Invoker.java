@@ -23,6 +23,8 @@ public final class Invoker {
 
     String commandClassPath =
         CONFIG.getProperty("commands") + "." + CONFIG.getProperty(commandName);
+
+    System.out.println(commandClassPath);
     Class<?> commandClass = getClass(commandClassPath);
     Constructor<?> commandConstructor = getConstructor(commandClass, HashMap.class);
 
