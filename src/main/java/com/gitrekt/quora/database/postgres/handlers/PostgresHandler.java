@@ -9,25 +9,23 @@ import java.sql.SQLException;
 
 public abstract class PostgresHandler<T> {
 
-  protected final Connection connection;
   protected final String tableName;
   protected Class<T> mapper;
 
   /**
    * Postgres Handler Constructor.
    *
-   * @param table  Table name.
+   * @param table Table name.
    * @param mapper Class to map rows to.
    */
 
   public PostgresHandler(String table, Class<T> mapper) {
-    connection = PostgresConnection.getInstance().getConnection();
-    System.out.println("DB conn. established" + connection.toString());
     tableName = table;
     this.mapper = mapper;
   }
 
-  protected ResultSet call(String sql, int[] types, Object... params) throws SQLException {
+  protected ResultSet call(String sql, int[] types, Connection connection, Object... params)
+      throws SQLException {
     // DbUtils does not support calling procedures?
     CallableStatement callableStatement = connection.prepareCall(sql);
     for (int i = 0; i < types.length; i++) {

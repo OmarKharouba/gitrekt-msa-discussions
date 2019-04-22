@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.mohamedelzarei.starter</groupId>
-    <artifactId>user-authentication</artifactId>
+    <artifactId>discussions</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>user-authentication</name>
+    <name>discussions</name>
     <url>http://msa.mohamedelzarei.me</url>
 
     <properties>

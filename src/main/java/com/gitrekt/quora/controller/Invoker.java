@@ -2,9 +2,6 @@ package com.gitrekt.quora.controller;
 
 import com.gitrekt.quora.commands.Command;
 import com.gitrekt.quora.config.Config;
-import com.gitrekt.quora.database.postgres.handlers.UsersPostgresHandler;
-import com.gitrekt.quora.exceptions.AuthenticationException;
-import com.gitrekt.quora.exceptions.BadRequestException;
 import com.gitrekt.quora.exceptions.ServerException;
 
 import java.lang.reflect.Constructor;

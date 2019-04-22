@@ -8,14 +8,15 @@ import java.sql.SQLException;
 
 public class PostgresConnection {
 
-  public Connection conn;
   public HikariDataSource dataSource;
 
   public PostgresConnection() {
     initDatasource();
   }
 
-  /** Set Database Pool. */
+  /**
+   * Set Database Pool.
+   */
   private void initDatasource() {
     dataSource = new HikariDataSource();
     String url =
@@ -27,9 +28,12 @@ public class PostgresConnection {
     dataSource.setJdbcUrl(url);
     dataSource.setUsername(System.getenv("POSTGRES_USER"));
     dataSource.setPassword(System.getenv("POSTGRES_PASSWORD"));
-    dataSource.addDataSourceProperty("serverName", System.getenv("POSTGRES_HOST"));
-    dataSource.addDataSourceProperty("port", System.getenv("POSTGRES_PORT"));
-    dataSource.addDataSourceProperty("databaseName", System.getenv("POSTGRES_DB"));
+    dataSource.addDataSourceProperty("cachePrepStmts", true);
+    dataSource.addDataSourceProperty("prepStmtCacheSize", 250);
+    dataSource.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
+    dataSource.addDataSourceProperty("rewriteBatchedStatements", true);
+    dataSource.setMaximumPoolSize(Integer.parseInt(System.getenv("POSTGRES_THREAD_POOL_COUNT")));
+
   }
 
   /**
@@ -52,6 +56,7 @@ public class PostgresConnection {
   }
 
   private static class PostgresConnectionHelper {
+
     private static final PostgresConnection INSTANCE = new PostgresConnection();
   }
 

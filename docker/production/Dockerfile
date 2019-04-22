@@ -1,12 +1,19 @@
-FROM maven:alpine
+# select image
+FROM maven:3.6.1-jdk-13-alpine
 
-WORKDIR /usr/src/app
+# copy the project files
+COPY ./pom.xml ./pom.xml
 
-COPY "./pom.xml" .
-RUN mvn -B -f ./pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve
-COPY ./ .
+# build all dependencies for offline use
+RUN mvn dependency:go-offline -B
 
-RUN ["mvn", "clean", "install", "-DskipTests"]
+# copy your other files
+COPY ./src ./src
 
-EXPOSE ["3001"]
+# build for release
+RUN ["mvn", "compile"]
+
 CMD ["mvn", "exec:java"]
+
+# set the startup command to run your binary
+# CMD ["java", "-jar", "./target/media-server-1.0-SNAPSHOT-jar-with-dependencies.jar"]
