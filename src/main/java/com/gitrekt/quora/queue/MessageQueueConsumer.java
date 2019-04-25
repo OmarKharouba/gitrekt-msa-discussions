@@ -109,6 +109,10 @@ public class MessageQueueConsumer {
               }
             }
 
+            if (request.get("userId")!=null) {
+              arguments.put("user_id", request.get("userId"));
+            }
+
             String replyTo = properties.getReplyTo();
             BasicProperties replyProperties =
                     new BasicProperties.Builder()
