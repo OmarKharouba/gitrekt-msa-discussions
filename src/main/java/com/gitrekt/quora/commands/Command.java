@@ -33,6 +33,5 @@ public abstract class Command {
     }
   }
 
-  public abstract Object execute()
-      throws SQLException,ServerException;
+  public abstract Object execute() throws SQLException, ServerException;
 }

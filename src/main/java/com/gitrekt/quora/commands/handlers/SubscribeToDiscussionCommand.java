@@ -24,11 +24,12 @@ public class SubscribeToDiscussionCommand extends Command {
     UUID userId = UUID.fromString((String) args.get("user_id"));
 
     setPostgresHandler(new DiscussionsPostgresHandler());
-    ((DiscussionsPostgresHandler)postgresHandler).insertUserSubscribeDiscussion(userId, discussionId);
+    ((DiscussionsPostgresHandler) postgresHandler)
+        .insertUserSubscribeDiscussion(userId, discussionId);
 
     JsonObject res = new JsonObject();
-    res.addProperty("status_code",200);
-    res.addProperty("message","Subscribed to discussion successfully");
+    res.addProperty("status_code", 200);
+    res.addProperty("message", "Subscribed to discussion successfully");
 
     return res;
   }

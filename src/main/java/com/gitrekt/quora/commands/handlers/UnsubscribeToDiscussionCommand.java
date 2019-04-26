@@ -10,26 +10,27 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class UnsubscribeToDiscussionCommand extends Command {
-    static String[] argsNames = {"discussion_id", "user_id"};
+  static String[] argsNames = {"discussion_id", "user_id"};
 
-    public UnsubscribeToDiscussionCommand(HashMap<String, Object> args) {
-        super(args);
-    }
+  public UnsubscribeToDiscussionCommand(HashMap<String, Object> args) {
+    super(args);
+  }
 
-    @Override
-    public Object execute() throws SQLException, BadRequestException {
-        checkArguments(argsNames);
+  @Override
+  public Object execute() throws SQLException, BadRequestException {
+    checkArguments(argsNames);
 
-        UUID discussionId = UUID.fromString((String) args.get("discussion_id"));
-        UUID userId = UUID.fromString((String) args.get("user_id"));
+    UUID discussionId = UUID.fromString((String) args.get("discussion_id"));
+    UUID userId = UUID.fromString((String) args.get("user_id"));
 
-        setPostgresHandler(new DiscussionsPostgresHandler());
-        ((DiscussionsPostgresHandler)postgresHandler).deleteUserSubscribeDiscussion(userId, discussionId);
+    setPostgresHandler(new DiscussionsPostgresHandler());
+    ((DiscussionsPostgresHandler) postgresHandler)
+        .deleteUserSubscribeDiscussion(userId, discussionId);
 
-        JsonObject res = new JsonObject();
-        res.addProperty("status_code",200);
-        res.addProperty("message","Unsubscribed from discussion successfully");
+    JsonObject res = new JsonObject();
+    res.addProperty("status_code", 200);
+    res.addProperty("message", "Unsubscribed from discussion successfully");
 
-        return res;
-    }
+    return res;
+  }
 }
