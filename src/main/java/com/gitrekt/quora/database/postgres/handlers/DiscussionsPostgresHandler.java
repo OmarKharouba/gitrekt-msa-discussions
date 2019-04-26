@@ -109,4 +109,40 @@ public class DiscussionsPostgresHandler extends PostgresHandler<Discussion> {
     }
   }
 
+  /**
+   * Adds an entry to the user_subscribe_discussion table.
+   *
+   * @param params the inputs to the sql procedure.
+   * @throws SQLException thrown when database error occurs
+   */
+  public void insertUserSubscribeDiscussion(Object... params) throws SQLException {
+    try (Connection connection = PostgresConnection.getInstance().getConnection()) {
+      String sql = "CALL Insert_User_Subscribe_Discussion(?, ?)";
+      int paramSize = params.length;
+      int[] types = new int[paramSize];
+      for (int idx = 0; idx < paramSize; idx++) {
+        types[idx] = Types.OTHER;
+      }
+      super.call(sql, types, connection, params);
+    }
+  }
+
+  /**
+   * Removes an entry from the user_subscribe_discussion table.
+   *
+   * @param params the inputs to the sql procedure.
+   * @throws SQLException thrown when database error occurs
+   */
+  public void deleteUserSubscribeDiscussion(Object... params) throws SQLException {
+    try (Connection connection = PostgresConnection.getInstance().getConnection()) {
+      String sql = "CALL Delete_User_Subscribe_Discussion(?, ?)";
+      int paramSize = params.length;
+      int[] types = new int[paramSize];
+      for (int idx = 0; idx < paramSize; idx++) {
+        types[idx] = Types.OTHER;
+      }
+      super.call(sql, types, connection, params);
+    }
+  }
+
 }
