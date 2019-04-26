@@ -1,5 +1,6 @@
 package com.gitrekt.quora.commands;
 
+import com.gitrekt.quora.database.postgres.handlers.PostgresHandler;
 import com.gitrekt.quora.exceptions.BadRequestException;
 import com.gitrekt.quora.exceptions.ServerException;
 
@@ -10,9 +11,14 @@ public abstract class Command {
 
   protected HashMap<String, Object> args;
 
+  protected PostgresHandler postgresHandler;
 
   public Command(HashMap<String, Object> args) {
     this.args = args;
+  }
+
+  public void setPostgresHandler(PostgresHandler postgresHandler) {
+    this.postgresHandler = postgresHandler;
   }
 
   protected void checkArguments(String[] requiredArgs) throws BadRequestException {
@@ -27,6 +33,5 @@ public abstract class Command {
     }
   }
 
-  public abstract Object execute()
-      throws SQLException,ServerException;
+  public abstract Object execute() throws SQLException, ServerException;
 }
