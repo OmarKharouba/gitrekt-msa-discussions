@@ -12,10 +12,10 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class UnsubscribeToDiscussion extends Command {
+public class UnsubscribeToDiscussionCommand extends Command {
     static String[] argsNames = {"discussion_id", "userId"};
 
-    public UnsubscribeToDiscussion(HashMap<String, Object> args) {
+    public UnsubscribeToDiscussionCommand(HashMap<String, Object> args) {
         super(args);
     }
 

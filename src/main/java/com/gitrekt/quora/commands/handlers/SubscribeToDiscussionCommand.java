@@ -12,10 +12,10 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class SubscribeToDiscussion extends Command {
+public class SubscribeToDiscussionCommand extends Command {
   static String[] argsNames = {"discussion_id", "userId"};
 
-  public SubscribeToDiscussion(HashMap<String, Object> args) {
+  public SubscribeToDiscussionCommand(HashMap<String, Object> args) {
     super(args);
   }
 
