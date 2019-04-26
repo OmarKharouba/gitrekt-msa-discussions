@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class SubscribeToDiscussionCommand extends Command {
-  static String[] argsNames = {"discussion_id", "userId"};
+  static String[] argsNames = {"discussion_id", "user_id"};
 
   public SubscribeToDiscussionCommand(HashMap<String, Object> args) {
     super(args);
@@ -26,7 +26,7 @@ public class SubscribeToDiscussionCommand extends Command {
     Connection connection = PostgresConnection.getInstance().getConnection();
 
     String discussionId = (String) args.get("discussion_id");
-    String userId = (String) args.get("userId");
+    String userId = (String) args.get("user_id");
 
     String sql = "CALL Insert_User_Subscribe_Discussion(?, ?)";
 

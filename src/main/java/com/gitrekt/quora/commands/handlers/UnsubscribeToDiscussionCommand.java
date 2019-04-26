@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class UnsubscribeToDiscussionCommand extends Command {
-    static String[] argsNames = {"discussion_id", "userId"};
+    static String[] argsNames = {"discussion_id", "user_id"};
 
     public UnsubscribeToDiscussionCommand(HashMap<String, Object> args) {
         super(args);
@@ -26,7 +26,7 @@ public class UnsubscribeToDiscussionCommand extends Command {
         Connection connection = PostgresConnection.getInstance().getConnection();
 
         String discussionId = (String) args.get("discussion_id");
-        String userId = (String) args.get("userId");
+        String userId = (String) args.get("user_id");
 
         String sql = "CALL Delete_User_Subscribe_Discussion(?, ?)";
 
