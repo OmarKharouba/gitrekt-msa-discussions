@@ -110,7 +110,11 @@ public class MessageQueueConsumer {
             }
 
             if (request.get("userId")!=null) {
-              arguments.put("user_id", request.get("userId"));
+              if(request.get("userId").isJsonPrimitive()) {
+                arguments.put("user_id", request.get("userId").getAsString());
+              } else {
+                arguments.put("user_id", request.get("userId").toString());
+              }
             }
 
             String replyTo = properties.getReplyTo();
