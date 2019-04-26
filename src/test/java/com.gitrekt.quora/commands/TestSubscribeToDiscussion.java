@@ -1,4 +1,4 @@
-package com.gitrekt.quora.commands;
+package java.com.gitrekt.quora.commands;
 
 import com.gitrekt.quora.commands.handlers.SubscribeToDiscussionCommand;
 import com.gitrekt.quora.commands.handlers.UnsubscribeToDiscussionCommand;
